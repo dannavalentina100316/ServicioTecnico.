@@ -73,7 +73,7 @@
 
             <q-card class="estadistica">
 
-              <q-card-section>
+              <q-card-section class="tarjeta-cabecera">
 
                 <div class="estadistica-contenido">
 
@@ -103,7 +103,7 @@
 
             <q-card class="estadistica">
 
-              <q-card-section>
+              <q-card-section class="tarjeta-cabecera">
 
                 <div class="estadistica-contenido">
 
@@ -276,7 +276,9 @@
 
               <q-separator />
 
-              <q-card-section>
+              <q-card-section class="tarjeta-contenido">
+
+                <div class="datos-grid">
 
                 <div class="dato">
 
@@ -303,7 +305,7 @@
                   <q-icon name="schedule" />
 
                   <span>
-                    {{ resultado.servicio.fecha }}
+                    {{ formatoFecha(resultado.servicio.fecha) }}
                   </span>
 
                 </div>
@@ -313,7 +315,7 @@
                   <q-icon name="attach_money" />
 
                   <span>
-                    ${{ Number(resultado.servicio.precio).toFixed(2) }}
+                    {{ formatoPesos(resultado.servicio.precio) }}
                   </span>
 
                 </div>
@@ -328,7 +330,11 @@
 
                 </div>
 
-                <div class="q-mt-md">
+                </div>
+
+                <div class="estados-grid">
+
+                <div class="estado-bloque">
 
                   <div class="titulo-pequeno">
                     Estado del equipo
@@ -380,7 +386,7 @@
 
                 </div>
 
-                <div class="q-mt-md">
+                <div class="estado-bloque">
 
                   <div class="titulo-pequeno">
                     Estado del pago
@@ -421,9 +427,11 @@
 
                 </div>
 
+                </div>
+
                 <div
                   v-if="resultado.servicio.calificacion > 0"
-                  class="q-mt-md"
+                  class="estado-bloque"
                 >
 
                   <div class="titulo-pequeno">
@@ -442,7 +450,7 @@
 
                 <div
                   v-if="resultado.servicio.observaciones"
-                  class="observaciones q-mt-md"
+                  class="observaciones estado-bloque"
                 >
 
                   <strong>
@@ -620,9 +628,8 @@
                 />
 
                 <q-input
-                  v-model="formulario.fecha"
+                  :model-value="formatoFecha(formulario.fecha)"
                   label="Fecha y hora de recepción *"
-                  type="datetime-local"
                   outlined
                   readonly
                   class="q-mb-md"
@@ -631,10 +638,11 @@
                 <q-input
                   v-model="formulario.precio"
                   label="Precio cobrado *"
-                  type="number"
+                  type="text"
+                  inputmode="numeric"
                   prefix="$"
-                  min="0"
-                  step="0.01"
+                  hint="Pesos colombianos"
+                  @update:model-value="formatearPrecio('precio', $event)"
                   outlined
                   :rules="[reglaPrecio]"
                   class="q-mb-md"
@@ -679,11 +687,11 @@
                   v-if="formulario.estadoPago === 'abono'"
                   v-model="formulario.montoAbono"
                   label="Valor del abono *"
-                  type="number"
+                  type="text"
+                  inputmode="numeric"
                   prefix="$"
-                  min="0.01"
-                  :max="formulario.precio"
-                  step="0.01"
+                  hint="Pesos colombianos"
+                  @update:model-value="formatearPrecio('montoAbono', $event)"
                   outlined
                   :rules="[reglaAbono]"
                   class="q-mb-md"
@@ -1147,7 +1155,7 @@ function reglaPrecio(valor) {
   }
 
 
-  if (Number(valor) < 0) {
+  if (numeroSinFormato(valor) < 0) {
 
     return 'El precio no puede ser negativo'
 
@@ -1173,6 +1181,49 @@ function reglaOtro(valor) {
   }
 
   return true
+
+}
+
+function numeroSinFormato(valor) {
+
+  return Number(String(valor || '').replace(/\./g, '').replace(/[^0-9]/g, '')) || 0
+
+}
+
+function formatoPesos(valor) {
+
+  return `$ ${numeroSinFormato(valor).toLocaleString('es-CO')}`
+
+}
+
+function formatearPrecio(campo, valor) {
+
+  const digitos = String(valor || '').replace(/[^0-9]/g, '')
+
+  formulario.value[campo] = digitos
+    ? Number(digitos).toLocaleString('es-CO')
+    : ''
+
+}
+
+function formatoFecha(valor) {
+
+  if (!valor) {
+
+    return ''
+
+  }
+
+  const [fecha, hora = ''] = String(valor).replace(' ', 'T').split('T')
+  const [anio, mes, dia] = fecha.split('-')
+
+  if (!anio || !mes || !dia) {
+
+    return valor
+
+  }
+
+  return `${dia}/${mes}/${anio}${hora ? ` ${hora.slice(0, 5)}` : ''}`
 
 }
 
@@ -1213,7 +1264,10 @@ function reglaAbono(valor) {
 
   }
 
-  if (Number(valor) <= 0 || Number(valor) > Number(formulario.value.precio)) {
+  if (
+    numeroSinFormato(valor) <= 0 ||
+    numeroSinFormato(valor) > numeroSinFormato(formulario.value.precio)
+  ) {
 
     return 'El abono debe ser mayor que cero y no superar el precio'
 
@@ -1393,10 +1447,10 @@ function guardarServicio() {
       ? String(formulario.value.reparacionOtro || '').trim()
       : '',
 
-    precio: Number(formulario.value.precio),
+    precio: numeroSinFormato(formulario.value.precio),
 
     montoAbono: formulario.value.estadoPago === 'abono'
-      ? Number(formulario.value.montoAbono)
+      ? numeroSinFormato(formulario.value.montoAbono)
       : 0,
 
     calificacion: Number(formulario.value.calificacion) || 0
@@ -1464,13 +1518,19 @@ function editarServicio(index) {
 
     modelo: servicio.modelo || servicio.equipo || '',
 
+    precio: servicio.precio
+      ? Number(servicio.precio).toLocaleString('es-CO')
+      : '',
+
+    montoAbono: servicio.montoAbono
+      ? Number(servicio.montoAbono).toLocaleString('es-CO')
+      : '',
+
     reparacion: Array.isArray(servicio.reparacion)
       ? servicio.reparacion
       : [servicio.reparacion].filter(Boolean),
 
     reparacionOtro: servicio.reparacionOtro || '',
-
-    montoAbono: servicio.montoAbono || ''
 
   }
 
@@ -1758,9 +1818,11 @@ function contarPago(estado) {
 
   border-radius: 14px;
 
-  height: 100%;
-
   overflow: hidden;
+
+  align-self: flex-start;
+
+  width: 100%;
 
   background: rgba(255, 255, 255, 0.96);
 
@@ -1784,7 +1846,7 @@ function contarPago(estado) {
 
 .nombre-cliente {
 
-  font-size: 17px;
+  font-size: 18px;
 
   font-weight: bold;
 
@@ -1799,6 +1861,30 @@ function contarPago(estado) {
 
   font-size: 15px;
 
+  line-height: 1.25;
+
+}
+
+.tarjeta-cabecera {
+
+  padding: 14px 16px 12px;
+
+}
+
+.tarjeta-contenido {
+
+  padding: 14px 16px 12px;
+
+}
+
+.datos-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 8px 18px;
+
 }
 
 .dato {
@@ -1809,11 +1895,23 @@ function contarPago(estado) {
 
   gap: 10px;
 
-  margin-bottom: 11px;
+  margin-bottom: 0;
 
   color: #555;
 
   font-size: 15px;
+
+  line-height: 1.3;
+
+  min-width: 0;
+
+}
+
+.dato span {
+
+  min-width: 0;
+
+  overflow-wrap: anywhere;
 
 }
 
@@ -1832,6 +1930,24 @@ function contarPago(estado) {
 
   font-weight: 600;
 
+  line-height: 1.25;
+
+}
+
+.estado-bloque {
+
+  margin-top: 10px;
+
+}
+
+.estados-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
 }
 
 .observaciones {
@@ -1840,7 +1956,7 @@ function contarPago(estado) {
 
   border-radius: 10px;
 
-  padding: 12px;
+  padding: 10px 12px;
 
   color: #555;
 
@@ -1897,6 +2013,12 @@ function contarPago(estado) {
 :deep(.q-focus-helper) {
 
   transition: none !important;
+
+}
+
+:deep(.tarjeta .q-card__actions) {
+
+  padding: 8px 12px 12px;
 
 }
 
@@ -1977,6 +2099,18 @@ function contarPago(estado) {
   .tarjeta {
 
     border-radius: 15px;
+
+  }
+
+  .datos-grid {
+
+    grid-template-columns: 1fr;
+
+  }
+
+  .estados-grid {
+
+    grid-template-columns: 1fr;
 
   }
 
