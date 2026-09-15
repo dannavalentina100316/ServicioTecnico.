@@ -778,6 +778,8 @@
 
                 <q-select
 
+                  v-if="formulario.marca !== 'Otra'"
+
                   v-model="formulario.marca"
 
                   label="Marca *"
@@ -790,7 +792,25 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md"
+                  class="q-mb-md campo-formulario"
+
+                />
+
+                <q-input
+
+                  v-else
+
+                  v-model="formulario.marcaPersonalizada"
+
+                  label="Marca *"
+
+                  placeholder="Escribe la marca"
+
+                  outlined
+
+                  :rules="[reglaObligatoria]"
+
+                  class="q-mb-md campo-formulario"
 
                 />
 
@@ -810,7 +830,7 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md"
+                  class="q-mb-md campo-formulario"
 
                 />
 
@@ -828,7 +848,7 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md"
+                  class="q-mb-md campo-formulario"
 
                 />
 
@@ -1287,6 +1307,8 @@ function crearFormulario() {
     cliente: '',
 
     marca: '',
+
+    marcaPersonalizada: '',
 
     modelo: '',
 
@@ -1826,8 +1848,11 @@ function cambiarMarca() {
 
   formulario.value.modelo = ''
 
-  actualizarModelos()
+  if (formulario.value.marca !== 'Otra') {
+    formulario.value.marcaPersonalizada = ''
+  }
 
+  actualizarModelos()
 }
 
 function abrirNuevoServicio() {
@@ -1922,7 +1947,11 @@ function guardarServicio() {
 
     cliente: String(formulario.value.cliente || '').trim(),
 
-    marca: String(formulario.value.marca || '').trim(),
+    marca: String(
+      formulario.value.marca === 'Otra'
+        ? formulario.value.marcaPersonalizada
+        : formulario.value.marca || ''
+    ).trim(),
 
     modelo: String(formulario.value.modelo || '').trim(),
 
@@ -2020,7 +2049,9 @@ function editarServicio(index) {
 
     ...servicio,
 
-    marca: servicio.marca || '',
+    marca: marcas.includes(servicio.marca || '') ? servicio.marca : 'Otra',
+
+    marcaPersonalizada: marcas.includes(servicio.marca || '') ? '' : (servicio.marca || ''),
 
     modelo: servicio.modelo || servicio.equipo || '',
 
@@ -2516,6 +2547,24 @@ function contarPago(estado) {
   max-width: 95vw;
   border-radius: 18px;
   box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
+}
+
+.campo-formulario :deep(.q-field__label) {
+  color: #3f4d54;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.campo-formulario :deep(.q-field__native),
+.campo-formulario :deep(.q-field__input) {
+  font-size: 15px;
+  font-weight: 500;
+  color: #26343a;
+}
+
+.campo-formulario :deep(.q-field__control) {
+  min-height: 56px;
+  border-radius: 10px;
 }
 
 @media (max-width: 600px) {
