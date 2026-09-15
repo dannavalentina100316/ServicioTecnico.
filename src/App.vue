@@ -9,21 +9,31 @@
         <div class="marca-header">
 
           <q-avatar
+
             color="white"
+
             text-color="primary"
+
             size="42px"
+
           >
+
             <q-icon name="build" size="23px" />
+
           </q-avatar>
 
         <q-toolbar-title>
 
           <div class="titulo">
+
             Servicio Técnico
+
           </div>
 
           <div class="subtitulo">
+
             Gestión de celulares y tablets
+
           </div>
 
         </q-toolbar-title>
@@ -31,13 +41,21 @@
         </div>
 
         <q-btn
+
           label="Nuevo servicio"
+
           icon="add"
+
           color="white"
+
           text-color="primary"
+
           unelevated
+
           class="boton-nuevo"
+
           @click="abrirNuevoServicio"
+
         />
 
       </q-toolbar>
@@ -53,12 +71,21 @@
           <q-card-section>
 
             <q-input
+
               v-model="busqueda"
+
+              @update:model-value="buscarServicios"
+
               outlined
+
               rounded
+
               clearable
+
               label="Buscar cliente o equipo"
+
               placeholder="Ej: Danna, Samsung A15, iPhone 12..."
+
             >
 
             </q-input>
@@ -82,11 +109,15 @@
                   <div>
 
                     <div class="texto-estadistica">
+
                       Total de servicios
+
                     </div>
 
                     <div class="numero">
+
                       {{ servicios.length }}
+
                     </div>
 
                   </div>
@@ -112,11 +143,15 @@
                   <div>
 
                     <div class="texto-estadistica">
+
                       En reparación
+
                     </div>
 
                     <div class="numero">
+
                       {{ contarEstado('en reparación') }}
+
                     </div>
 
                   </div>
@@ -142,11 +177,15 @@
                   <div>
 
                     <div class="texto-estadistica">
+
                       Pagos pendientes
+
                     </div>
 
                     <div class="numero">
+
                       {{ contarPago('pendiente') }}
+
                     </div>
 
                   </div>
@@ -162,50 +201,79 @@
         </div>
 
         <div
+
           v-if="servicios.length === 0"
+
           class="mensaje-vacio"
+
         >
 
           <q-icon
+
             name="phone_android"
+
             size="80px"
+
           />
 
           <h4>
+
             No hay servicios registrados
+
           </h4>
 
           <p>
+
             Comienza registrando el primer equipo del taller.
+
           </p>
 
           <q-btn
+
             label="Registrar servicio"
+
             icon="add"
+
             color="primary"
+
             unelevated
+
             @click="abrirNuevoServicio"
+
           />
 
         </div>
 
         <div
+
           v-else-if="serviciosFiltrados.length > 0"
+
           class="row q-col-gutter-md"
+
         >
 
           <div
+
             v-for="resultado in serviciosFiltrados"
+
             :key="resultado.indice"
+
             class="col-12 col-md-6 col-lg-4"
+
           >
 
             <q-card
+
               class="tarjeta"
+
               :class="{
+
                 'pago-pendiente': resultado.servicio.estadoPago === 'pendiente',
+
                 'pago-abono': resultado.servicio.estadoPago === 'abono'
+
               }"
+
             >
 
               <q-card-section>
@@ -215,8 +283,11 @@
                   <div class="row items-center">
 
                     <q-avatar
+
                       color="primary"
+
                       text-color="white"
+
                     >
 
                       <q-icon name="phone_android" />
@@ -224,14 +295,19 @@
                     </q-avatar>
 
 
+
                     <div class="q-ml-md">
 
                       <div class="nombre-cliente">
+
                         {{ resultado.servicio.cliente }}
+
                       </div>
 
                       <div class="equipo">
+
                         {{ resultado.servicio.marca }} {{ resultado.servicio.modelo || resultado.servicio.equipo }}
+
                       </div>
 
                     </div>
@@ -241,31 +317,51 @@
                   <div>
 
                     <q-icon
+
                       v-if="resultado.servicio.estadoEquipo === 'recibido'"
+
                       name="inventory_2"
+
                       color="blue"
+
                       size="30px"
+
                     />
 
                     <q-icon
+
                       v-else-if="resultado.servicio.estadoEquipo === 'en reparación'"
+
                       name="build"
+
                       color="orange"
+
                       size="30px"
+
                     />
 
                     <q-icon
+
                       v-else-if="resultado.servicio.estadoEquipo === 'listo para entregar'"
+
                       name="check_circle"
+
                       color="green"
+
                       size="30px"
+
                     />
 
                     <q-icon
+
                       v-else-if="resultado.servicio.estadoEquipo === 'entregado'"
+
                       name="done_all"
+
                       color="grey"
+
                       size="30px"
+
                     />
 
                   </div>
@@ -285,7 +381,9 @@
                   <q-icon name="build" />
 
                   <span>
+
                     {{ textoReparaciones(resultado.servicio) }}
+
                   </span>
 
                 </div>
@@ -295,7 +393,9 @@
                   <q-icon name="person" />
 
                   <span>
+
                     Técnico: {{ resultado.servicio.tecnico }}
+
                   </span>
 
                 </div>
@@ -305,7 +405,9 @@
                   <q-icon name="schedule" />
 
                   <span>
+
                     {{ formatoFecha(resultado.servicio.fecha) }}
+
                   </span>
 
                 </div>
@@ -315,7 +417,9 @@
                   <q-icon name="attach_money" />
 
                   <span>
+
                     {{ formatoPesos(resultado.servicio.precio) }}
+
                   </span>
 
                 </div>
@@ -325,7 +429,9 @@
                   <q-icon name="payments" />
 
                   <span>
+
                     {{ resultado.servicio.metodoPago }}
+
                   </span>
 
                 </div>
@@ -337,14 +443,21 @@
                 <div class="estado-bloque">
 
                   <div class="titulo-pequeno">
+
                     Estado del equipo
+
                   </div>
 
 
+
                   <q-badge
+
                     v-if="resultado.servicio.estadoEquipo === 'recibido'"
+
                     color="blue"
+
                     class="q-mt-xs"
+
                   >
 
                     Equipo recibido
@@ -352,10 +465,15 @@
                   </q-badge>
 
 
+
                   <q-badge
+
                     v-else-if="resultado.servicio.estadoEquipo === 'en reparación'"
+
                     color="orange"
+
                     class="q-mt-xs"
+
                   >
 
                     En reparación
@@ -363,10 +481,15 @@
                   </q-badge>
 
 
+
                   <q-badge
+
                     v-else-if="resultado.servicio.estadoEquipo === 'listo para entregar'"
+
                     color="green"
+
                     class="q-mt-xs"
+
                   >
 
                     Listo para entregar
@@ -374,10 +497,15 @@
                   </q-badge>
 
 
+
                   <q-badge
+
                     v-else
+
                     color="grey"
+
                     class="q-mt-xs"
+
                   >
 
                     Entregado
@@ -389,14 +517,21 @@
                 <div class="estado-bloque">
 
                   <div class="titulo-pequeno">
+
                     Estado del pago
+
                   </div>
 
 
+
                   <q-badge
+
                     v-if="resultado.servicio.estadoPago === 'pagado'"
+
                     color="positive"
+
                     class="q-mt-xs"
+
                   >
 
                     ✓ Pagado
@@ -404,10 +539,15 @@
                   </q-badge>
 
 
+
                   <q-badge
+
                     v-else-if="resultado.servicio.estadoPago === 'abono'"
+
                     color="warning"
+
                     class="q-mt-xs"
+
                   >
 
                     Abono: ${{ Number(resultado.servicio.montoAbono || 0).toFixed(2) }}
@@ -415,10 +555,15 @@
                   </q-badge>
 
 
+
                   <q-badge
+
                     v-else
+
                     color="negative"
+
                     class="q-mt-xs"
+
                   >
 
                     ✕ Pago pendiente
@@ -430,35 +575,53 @@
                 </div>
 
                 <div
+
                   v-if="resultado.servicio.calificacion > 0"
+
                   class="estado-bloque"
+
                 >
 
                   <div class="titulo-pequeno">
+
                     Calificación del cliente
+
                   </div>
 
                   <q-rating
+
                     v-model="resultado.servicio.calificacion"
+
                     readonly
+
                     size="25px"
+
                     icon="star_border"
+
                     icon-selected="star"
+
                   />
 
                 </div>
 
                 <div
+
                   v-if="resultado.servicio.observaciones"
+
                   class="observaciones estado-bloque"
+
                 >
 
                   <strong>
+
                     Observaciones
+
                   </strong>
 
                   <div class="q-mt-xs">
+
                     {{ resultado.servicio.observaciones }}
+
                   </div>
 
                 </div>
@@ -466,33 +629,55 @@
               </q-card-section>
 
 
+
               <q-card-actions align="right">
 
                 <q-btn
+
                   v-if="resultado.servicio.estadoEquipo === 'entregado' && resultado.servicio.estadoPago === 'pagado' && !resultado.servicio.calificacion"
+
                   flat
+
                   icon="star"
+
                   label="Calificar"
+
                   color="amber-8"
+
                   @click="abrirCalificacion(resultado.servicio)"
+
                 />
 
                 <q-btn
+
                   v-if="resultado.servicio.estadoEquipo !== 'entregado'"
+
                   flat
+
                   icon="edit"
+
                   label="Editar"
+
                   color="primary"
+
                   @click="editarServicio(resultado.indice)"
+
                 />
 
                 <q-btn
+
                   v-if="resultado.servicio.estadoEquipo !== 'entregado'"
+
                   flat
+
                   icon="delete"
+
                   label="Eliminar"
+
                   color="negative"
+
                   @click="confirmarEliminar(resultado.indice)"
+
                 />
 
               </q-card-actions>
@@ -504,25 +689,37 @@
         </div>
 
         <div
+
           v-else
+
           class="mensaje-vacio"
+
         >
 
           <q-icon
+
             name="search_off"
+
             size="70px"
+
           />
 
           <h4>
+
             No encontramos resultados
+
           </h4>
 
           <p>
+
             No hay clientes o equipos que coincidan con:
+
           </p>
 
           <strong>
+
             "{{ busqueda }}"
+
           </strong>
 
         </div>
@@ -542,14 +739,21 @@
               <q-space />
 
               <q-btn
+
                 icon="close"
+
                 flat
+
                 round
+
                 dense
+
                 @click="cerrarModal"
+
               />
 
             </q-card-section>
+
 
 
             <q-separator />
@@ -559,151 +763,269 @@
               <q-card-section>
 
                 <q-input
+
                   v-model="formulario.cliente"
+
                   label="Nombre del cliente *"
+
                   outlined
+
                   :rules="[reglaNombre]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-model="formulario.marca"
+
                   label="Marca *"
+
                   outlined
+
                   :options="marcas"
+
                   @update:model-value="cambiarMarca"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-if="formulario.marca !== 'Otra'"
+
                   v-model="formulario.modelo"
+
                   label="Modelo *"
+
                   outlined
+
                   :options="modelosDisponibles"
+
                   :disable="!formulario.marca"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   v-else
+
                   v-model="formulario.modelo"
+
                   label="Modelo *"
+
                   placeholder="Escribe el modelo"
+
                   outlined
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-model="formulario.reparacion"
+
                   label="Tipo de reparación *"
+
                   outlined
+
                   :options="reparaciones"
+
                   multiple
+
                   use-chips
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   v-if="formulario.reparacion.includes('Otros')"
+
                   v-model="formulario.reparacionOtro"
+
                   label="Especifica el tipo de servicio *"
+
                   placeholder="Ej: Reparación de cámara"
+
                   outlined
+
                   :rules="[reglaOtro]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-model="formulario.tecnico"
+
                   label="Técnico *"
+
                   outlined
+
                   :options="tecnicos"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   :model-value="formatoFecha(formulario.fecha)"
+
                   label="Fecha y hora de recepción *"
+
                   outlined
+
                   readonly
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   v-model="formulario.precio"
+
                   label="Precio cobrado *"
+
                   type="text"
+
                   inputmode="numeric"
+
                   prefix="$"
+
                   hint="Pesos colombianos"
+
                   @update:model-value="formatearPrecio('precio', $event)"
+
                   outlined
+
                   :rules="[reglaPrecio]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-model="formulario.metodoPago"
+
                   label="Método de pago *"
+
                   outlined
+
                   :options="metodosPago"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-select
+
                   v-model="formulario.estadoPago"
+
                   label="Estado del pago *"
+
                   outlined
+
                   :options="estadosPago"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <div
+
                   v-if="mostrarErrorEntrega"
+
                   class="text-negative text-caption q-mb-md"
+
                 >
+
                   Para entregar el equipo, el estado del pago debe ser pagado.
+
                 </div>
 
                 <q-select
+
                   v-model="formulario.estadoEquipo"
+
                   label="Estado del equipo *"
+
                   outlined
+
                   :options="estadosEquipo"
+
                   :disable="!editando"
+
                   :rules="[reglaObligatoria]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   v-if="formulario.estadoPago === 'abono'"
+
                   v-model="formulario.montoAbono"
+
                   label="Valor del abono *"
+
                   type="text"
+
                   inputmode="numeric"
+
                   prefix="$"
+
                   hint="Pesos colombianos"
+
                   @update:model-value="formatearPrecio('montoAbono', $event)"
+
                   outlined
+
                   :rules="[reglaAbono]"
+
                   class="q-mb-md"
+
                 />
 
                 <q-input
+
                   v-model="formulario.observaciones"
+
                   label="Observaciones"
+
                   outlined
+
                   type="textarea"
+
                   rows="3"
+
                   placeholder="Ej: Pantalla partida en la esquina superior..."
+
                 />
 
               </q-card-section>
@@ -711,17 +1033,27 @@
               <q-card-actions align="right">
 
                 <q-btn
+
                   label="Cancelar"
+
                   flat
+
                   color="grey"
+
                   @click="cerrarModal"
+
                 />
 
                 <q-btn
+
                   type="submit"
+
                   :label="editando ? 'Guardar cambios' : 'Registrar servicio'"
+
                   color="primary"
+
                   unelevated
+
                 />
 
               </q-card-actions>
@@ -739,11 +1071,15 @@
             <q-card-section>
 
               <div class="text-h6">
+
                 Calificación del cliente
+
               </div>
 
               <div class="text-grey-7 q-mt-sm">
+
                 {{ servicioCalificar?.cliente }} - {{ servicioCalificar?.marca }} {{ servicioCalificar?.modelo }}
+
               </div>
 
             </q-card-section>
@@ -751,18 +1087,29 @@
             <q-card-section class="text-center">
 
               <q-rating
+
                 v-model="calificacionPendiente"
+
                 size="42px"
+
                 color="amber-8"
+
                 icon="star_border"
+
                 icon-selected="star"
+
               />
 
               <div
+
                 v-if="mostrarErrorCalificacion"
+
                 class="text-negative text-caption q-mt-sm"
+
               >
+
                 Selecciona una calificación para continuar.
+
               </div>
 
             </q-card-section>
@@ -770,16 +1117,25 @@
             <q-card-actions align="right">
 
               <q-btn
+
                 label="Cancelar"
+
                 flat
+
                 @click="cerrarCalificacion"
+
               />
 
               <q-btn
+
                 label="Guardar calificación"
+
                 color="primary"
+
                 unelevated
+
                 @click="guardarCalificacion"
+
               />
 
             </q-card-actions>
@@ -793,11 +1149,15 @@
           <q-card class="confirmacion">
 
 
+
             <q-card-section class="row items-center">
 
               <q-avatar
+
                 color="negative"
+
                 text-color="white"
+
               >
 
                 <q-icon name="delete" />
@@ -807,16 +1167,21 @@
               <div class="q-ml-md">
 
                 <div class="text-h6">
+
                   Eliminar servicio
+
                 </div>
 
                 <div class="text-grey-7">
+
                   Esta acción no se puede deshacer.
+
                 </div>
 
               </div>
 
             </q-card-section>
+
 
 
             <q-card-section>
@@ -826,19 +1191,29 @@
             </q-card-section>
 
 
+
             <q-card-actions align="right">
 
               <q-btn
+
                 label="Cancelar"
+
                 flat
+
                 @click="cerrarConfirmacion"
+
               />
 
               <q-btn
+
                 label="Eliminar"
+
                 color="negative"
+
                 unelevated
+
                 @click="eliminarServicio"
+
               />
 
             </q-card-actions>
@@ -857,12 +1232,16 @@
 
 <script setup>
 
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
+
 import { useLocalStorage } from '@vueuse/core'
 
 const servicios = useLocalStorage(
+
   'servicios-tecnicos',
+
   []
+
 )
 
 const mostrarModal = ref(false)
@@ -892,7 +1271,9 @@ function fechaActual() {
   const ahora = new Date()
 
   const fecha = new Date(
+
     ahora.getTime() - ahora.getTimezoneOffset() * 60000
+
   )
 
   return fecha.toISOString().slice(0, 16)
@@ -980,86 +1361,139 @@ const marcas = [
 const modelosPorMarca = {
 
   Apple: [
+
     'iPhone 11',
+
     'iPhone 12',
+
     'iPhone 13',
+
     'iPhone 14',
+
     'iPhone 15',
+
     'iPad'
+
   ],
 
   Samsung: [
+
     'Galaxy A15',
+
     'Galaxy A25',
+
     'Galaxy A54',
+
     'Galaxy S23',
+
     'Galaxy S24',
+
     'Galaxy Note 20'
+
   ],
 
   Xiaomi: [
+
     'Redmi Note 12',
+
     'Redmi Note 13',
+
     'Redmi 12',
+
     'Poco X5',
+
     'Poco X6'
+
   ],
 
   Motorola: [
+
     'Moto G32',
+
     'Moto G53',
+
     'Moto G84',
+
     'Edge 40'
+
   ],
 
   Huawei: [
+
     'P30 Lite',
+
     'P40 Lite',
+
     'Nova 9',
+
     'Mate 40 Pro'
+
   ],
 
   Oppo: [
+
     'A57',
+
     'A78',
+
     'Reno 8',
+
     'Reno 10'
+
   ],
 
   Honor: [
+
     'X7',
+
     'X8',
+
     'X9',
+
     'Magic 5 Lite'
+
   ],
 
   Nokia: [
+
     'C21',
+
     'G22',
+
     'G42',
+
     'X30'
+
   ],
 
   Otra: []
 
 }
 
-const modelosDisponibles = computed(() => {
+const modelosDisponibles = ref([])
+
+function actualizarModelos() {
 
   const modelos = modelosPorMarca[formulario.value.marca] || []
 
   if (
+
     formulario.value.modelo &&
+
     !modelos.includes(formulario.value.modelo)
+
   ) {
 
-    return [formulario.value.modelo, ...modelos]
+    modelosDisponibles.value = [formulario.value.modelo, ...modelos]
+
+    return
 
   }
 
-  return modelos
+  modelosDisponibles.value = modelos
 
-})
+}
+
 
 
 const tecnicos = [
@@ -1073,6 +1507,7 @@ const tecnicos = [
 ]
 
 
+
 const metodosPago = [
 
   'Efectivo',
@@ -1084,6 +1519,7 @@ const metodosPago = [
 ]
 
 
+
 const estadosPago = [
 
   'pagado',
@@ -1093,6 +1529,7 @@ const estadosPago = [
   'abono'
 
 ]
+
 
 
 const estadosEquipo = [
@@ -1110,10 +1547,15 @@ const estadosEquipo = [
 function reglaObligatoria(valor) {
 
   if (
+
     valor === null ||
+
     valor === undefined ||
+
     (typeof valor === 'string' && !valor.trim()) ||
+
     (Array.isArray(valor) && valor.length === 0)
+
   ) {
 
     return 'Este campo es obligatorio'
@@ -1145,9 +1587,13 @@ function reglaNombre(valor) {
 function reglaPrecio(valor) {
 
   if (
+
     valor === null ||
+
     valor === undefined ||
+
     valor === ''
+
   ) {
 
     return 'El precio es obligatorio'
@@ -1155,11 +1601,13 @@ function reglaPrecio(valor) {
   }
 
 
+
   if (numeroSinFormato(valor) < 0) {
 
     return 'El precio no puede ser negativo'
 
   }
+
 
 
   return true
@@ -1186,7 +1634,7 @@ function reglaOtro(valor) {
 
 function numeroSinFormato(valor) {
 
-  return Number(String(valor || '').replace(/\./g, '').replace(/[^0-9]/g, '')) || 0
+  return Number(String(valor || '').replace(/[^0-9]/g, '')) || 0
 
 }
 
@@ -1201,7 +1649,9 @@ function formatearPrecio(campo, valor) {
   const digitos = String(valor || '').replace(/[^0-9]/g, '')
 
   formulario.value[campo] = digitos
+
     ? Number(digitos).toLocaleString('es-CO')
+
     : ''
 
 }
@@ -1215,6 +1665,7 @@ function formatoFecha(valor) {
   }
 
   const [fecha, hora = ''] = String(valor).replace(' ', 'T').split('T')
+
   const [anio, mes, dia] = fecha.split('-')
 
   if (!anio || !mes || !dia) {
@@ -1230,18 +1681,25 @@ function formatoFecha(valor) {
 function textoReparaciones(servicio) {
 
   const reparacionesSeleccionadas = Array.isArray(servicio.reparacion)
+
     ? servicio.reparacion
+
     : [servicio.reparacion].filter(Boolean)
 
   const reparacionesTexto = reparacionesSeleccionadas
+
     .filter((reparacion) => reparacion !== 'Otros')
 
   if (reparacionesSeleccionadas.includes('Otros')) {
 
     reparacionesTexto.push(
+
       servicio.reparacionOtro
+
         ? `Otros: ${servicio.reparacionOtro}`
+
         : 'Otros'
+
     )
 
   }
@@ -1265,8 +1723,11 @@ function reglaAbono(valor) {
   }
 
   if (
+
     numeroSinFormato(valor) <= 0 ||
+
     numeroSinFormato(valor) > numeroSinFormato(formulario.value.precio)
+
   ) {
 
     return 'El abono debe ser mayor que cero y no superar el precio'
@@ -1277,34 +1738,54 @@ function reglaAbono(valor) {
 
 }
 
+const serviciosFiltrados = ref([])
+
 function buscarServicios() {
 
   let resultados = []
 
   const texto = busqueda.value
+
     .toLowerCase()
+
     .trim()
 
 
+
   for (
+
     let i = 0;
+
     i < servicios.value.length;
+
     i++
+
   ) {
 
     const cliente =
-      servicios.value[i].cliente
+
+      String(servicios.value[i].cliente || '')
+
         .toLowerCase()
 
 
+
     const equipo = [
+
       servicios.value[i].marca,
+
       servicios.value[i].modelo,
+
       servicios.value[i].equipo
+
     ]
+
       .filter(Boolean)
+
       .join(' ')
+
       .toLowerCase()
+
 
 
     if (
@@ -1328,21 +1809,24 @@ function buscarServicios() {
   }
 
 
-  return resultados
+
+  serviciosFiltrados.value = resultados
 
 }
-
-const serviciosFiltrados = computed(() => buscarServicios())
 
 function limpiarFormulario() {
 
   formulario.value = crearFormulario()
+
+  actualizarModelos()
 
 }
 
 function cambiarMarca() {
 
   formulario.value.modelo = ''
+
+  actualizarModelos()
 
 }
 
@@ -1406,6 +1890,8 @@ function guardarCalificacion() {
 
   servicioCalificar.value.calificacion = calificacionPendiente.value
 
+  buscarServicios()
+
   cerrarCalificacion()
 
 }
@@ -1417,8 +1903,11 @@ function guardarServicio() {
   mostrarErrorEntrega.value = false
 
   if (
+
     formulario.value.estadoEquipo === 'entregado' &&
+
     formulario.value.estadoPago !== 'pagado'
+
   ) {
 
     mostrarErrorEntrega.value = true
@@ -1440,17 +1929,23 @@ function guardarServicio() {
     observaciones: String(formulario.value.observaciones || '').trim(),
 
     reparacion: Array.isArray(formulario.value.reparacion)
+
       ? formulario.value.reparacion
+
       : [formulario.value.reparacion].filter(Boolean),
 
     reparacionOtro: formulario.value.reparacion.includes('Otros')
+
       ? String(formulario.value.reparacionOtro || '').trim()
+
       : '',
 
     precio: numeroSinFormato(formulario.value.precio),
 
     montoAbono: formulario.value.estadoPago === 'abono'
+
       ? numeroSinFormato(formulario.value.montoAbono)
+
       : 0,
 
     calificacion: Number(formulario.value.calificacion) || 0
@@ -1458,7 +1953,9 @@ function guardarServicio() {
   }
 
 
+
   if (editando.value) {
+
 
 
     if (indiceEditar.value < 0 || indiceEditar.value >= servicios.value.length) {
@@ -1470,12 +1967,17 @@ function guardarServicio() {
     servicios.value[indiceEditar.value] = servicio
 
 
+
   } else {
+
 
 
     servicios.value.push(servicio)
 
   }
+
+  buscarServicios()
+
 
 
   mostrarModal.value = false
@@ -1497,9 +1999,13 @@ function guardarServicio() {
 function editarServicio(index) {
 
   if (
+
     index < 0 ||
+
     index >= servicios.value.length ||
+
     servicios.value[index].estadoEquipo === 'entregado'
+
   ) {
 
     return
@@ -1519,20 +2025,29 @@ function editarServicio(index) {
     modelo: servicio.modelo || servicio.equipo || '',
 
     precio: servicio.precio
+
       ? Number(servicio.precio).toLocaleString('es-CO')
+
       : '',
 
     montoAbono: servicio.montoAbono
+
       ? Number(servicio.montoAbono).toLocaleString('es-CO')
+
       : '',
 
     reparacion: Array.isArray(servicio.reparacion)
+
       ? servicio.reparacion
+
       : [servicio.reparacion].filter(Boolean),
 
     reparacionOtro: servicio.reparacionOtro || '',
 
   }
+
+  actualizarModelos()
+
 
 
   indiceEditar.value = index
@@ -1546,9 +2061,13 @@ function editarServicio(index) {
 function confirmarEliminar(index) {
 
   if (
+
     index < 0 ||
+
     index >= servicios.value.length ||
+
     servicios.value[index].estadoEquipo === 'entregado'
+
   ) {
 
     return
@@ -1572,17 +2091,27 @@ function cerrarConfirmacion() {
 function eliminarServicio() {
 
   if (
+
     indiceEliminar.value >= 0 &&
+
     indiceEliminar.value < servicios.value.length &&
+
     servicios.value[indiceEliminar.value].estadoEquipo !== 'entregado'
+
   ) {
 
     servicios.value.splice(
+
       indiceEliminar.value,
+
       1
+
     )
 
   }
+
+  buscarServicios()
+
 
 
   cerrarConfirmacion()
@@ -1594,14 +2123,21 @@ function contarEstado(estado) {
   let cantidad = 0
 
 
+
   for (
+
     let i = 0;
+
     i < servicios.value.length;
+
     i++
+
   ) {
 
     if (
+
       servicios.value[i].estadoEquipo === estado
+
     ) {
 
       cantidad++
@@ -1609,6 +2145,7 @@ function contarEstado(estado) {
     }
 
   }
+
 
 
   return cantidad
@@ -1620,14 +2157,21 @@ function contarPago(estado) {
   let cantidad = 0
 
 
+
   for (
+
     let i = 0;
+
     i < servicios.value.length;
+
     i++
+
   ) {
 
     if (
+
       servicios.value[i].estadoPago === estado
+
     ) {
 
       cantidad++
@@ -1635,6 +2179,7 @@ function contarPago(estado) {
     }
 
   }
+
 
 
   return cantidad
@@ -1648,6 +2193,7 @@ function contarPago(estado) {
 .pagina {
 
   background:
+
     linear-gradient(180deg, #f8fbfc 0%, #eef4f5 100%);
 
   font-family: "Avenir Next", "Trebuchet MS", sans-serif;
@@ -1743,6 +2289,7 @@ function contarPago(estado) {
   background: #fbfdfd;
 
 
+
 }
 
 .estadistica {
@@ -1788,28 +2335,39 @@ function contarPago(estado) {
 }
 
 .color-circle {
+
   width: 50px;
+
   height: 50px;
+
   border-radius: 14px;
+
   flex-shrink: 0;
+
 }
 
 .color-circle.primary {
+
   background: #007bff;
 
   border: 1px solid #0066d6;
+
 }
 
 .color-circle.warning {
+
   background: #fed843;
 
   border: 1px solid #e5bd26;
+
 }
 
 .color-circle.negative {
+
   background: #ec1000;
 
   border: 1px solid #c90e00;
+
 }
 
 .tarjeta {
@@ -1831,11 +2389,13 @@ function contarPago(estado) {
 }
 
 
+
 .pago-pendiente {
 
   border-left: 6px solid #c62828;
 
 }
+
 
 
 .pago-abono {
@@ -1853,6 +2413,7 @@ function contarPago(estado) {
   color: #20383c;
 
 }
+
 
 
 .equipo {
@@ -1916,6 +2477,7 @@ function contarPago(estado) {
 }
 
 
+
 .dato .q-icon {
 
   color: #29626D;
@@ -1973,6 +2535,7 @@ function contarPago(estado) {
 }
 
 
+
 .mensaje-vacio h4 {
 
   margin-bottom: 8px;
@@ -1982,6 +2545,7 @@ function contarPago(estado) {
 }
 
 
+
 .mensaje-vacio p {
 
   margin-top: 5px;
@@ -1989,11 +2553,15 @@ function contarPago(estado) {
 }
 
 :deep(.q-card) {
+
   font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+
 }
 
 :deep(.q-dialog__inner) {
+
   padding: 24px;
+
 }
 
 :deep(.q-btn) {
@@ -2009,7 +2577,9 @@ function contarPago(estado) {
 }
 
 :deep(.q-card),
+
 :deep(.q-field__control),
+
 :deep(.q-focus-helper) {
 
   transition: none !important;
@@ -2041,7 +2611,7 @@ function contarPago(estado) {
   max-width: 95vw;
 
   border-radius: 14px;
-  
+
   box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
 
 }
