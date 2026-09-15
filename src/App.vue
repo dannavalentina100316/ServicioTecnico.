@@ -2191,499 +2191,404 @@ function contarPago(estado) {
 <style scoped>
 
 .pagina {
-
-  background:
-
-    linear-gradient(180deg, #f8fbfc 0%, #eef4f5 100%);
-
-  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
-
   min-height: 100vh;
-
-  padding: 30px clamp(16px, 4vw, 56px) 48px;
-
+  padding: 32px clamp(16px, 4vw, 64px) 55px;
+  background: #f5f7f9;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
 }
 
 .header {
-
-  background: linear-gradient(115deg, #173f46 0%, #245c62 100%);
-
-  box-shadow: 0 4px 18px rgba(18, 52, 58, 0.24);
-
+  background: linear-gradient(135deg, #123f48 0%, #1f6870 55%, #2c7b7b 100%);
+  box-shadow: 0 6px 22px rgba(20, 62, 70, 0.22);
 }
 
 .barra-superior {
-
-  min-height: 76px;
-
-  padding: 10px clamp(16px, 4vw, 56px);
-
+  min-height: 82px;
+  padding: 12px clamp(16px, 4vw, 64px);
 }
 
 .marca-header {
-
   display: flex;
-
   align-items: center;
-
   flex: 1;
-
   min-width: 0;
+  gap: 14px;
+}
 
-  gap: 13px;
-
+.marca-header .q-avatar {
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
 }
 
 .boton-nuevo {
-
-  border-radius: 10px;
-
-  padding: 0 18px;
-
+  border-radius: 12px;
+  padding: 0 19px;
+  min-height: 42px;
   font-weight: 700;
-
   text-transform: none;
-
   letter-spacing: 0;
-
   margin-left: 18px;
-
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.10);
 }
 
 .titulo {
-
-  font-size: 21px;
-
-  font-weight: bold;
-
-  letter-spacing: 0.1px;
-
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
 }
 
 .subtitulo {
-
-  font-size: 14px;
-
-  opacity: 0.9;
-
+  margin-top: 2px;
+  font-size: 13px;
+  opacity: 0.82;
   letter-spacing: 0.2px;
-
 }
 
 .buscador {
+  margin-bottom: 24px;
+  border: 1px solid #e1e8eb;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 8px 25px rgba(31, 67, 73, 0.07) !important;
+}
 
-  border: 1px solid #e0eaec;
-
-  border-radius: 14px;
-
-  background: white;
-
-  box-shadow: 0 8px 24px rgba(42, 76, 82, 0.07) !important;
-
+.buscador :deep(.q-card__section) {
+  padding: 18px;
 }
 
 .buscador :deep(.q-field__control) {
+  min-height: 50px;
+  border-radius: 12px;
+  background: #fafcfc;
+}
 
-  border-radius: 10px;
-
-  background: #fbfdfd;
-
-
-
+.buscador :deep(.q-field__native),
+.buscador :deep(.q-field__label) {
+  font-size: 14px;
 }
 
 .estadistica {
-
-  border: 1px solid #e0eaec;
-
-  border-radius: 14px;
-
   height: 100%;
+  border: 1px solid #e3e9eb;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(31, 67, 73, 0.06) !important;
+}
 
-  background: rgba(255, 255, 255, 0.94);
-
-  box-shadow: 0 8px 22px rgba(42, 76, 82, 0.06) !important;
-
+.estadistica:hover {
+  box-shadow: 0 12px 28px rgba(31, 67, 73, 0.10) !important;
 }
 
 .estadistica-contenido {
-
   display: flex;
-
   align-items: center;
-
   gap: 15px;
-
 }
 
 .texto-estadistica {
-
-  color: #6b7280;
-
-  font-size: 15px;
-
+  color: #718087;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .numero {
-
+  margin-top: 2px;
   font-size: 30px;
-
-  font-weight: bold;
-
-  color: #164b58;
-
+  line-height: 1;
+  font-weight: 800;
+  color: #173f46;
 }
 
 .color-circle {
-
-  width: 50px;
-
-  height: 50px;
-
+  width: 48px;
+  height: 48px;
   border-radius: 14px;
-
   flex-shrink: 0;
-
+  position: relative;
 }
 
 .color-circle.primary {
-
-  background: #007bff;
-
-  border: 1px solid #0066d6;
-
+  background: #e7f4f4;
+  border: 1px solid #c8e3e4;
 }
 
 .color-circle.warning {
-
-  background: #fed843;
-
-  border: 1px solid #e5bd26;
-
+  background: #fff5dc;
+  border: 1px solid #f5dfaa;
 }
 
 .color-circle.negative {
-
-  background: #ec1000;
-
-  border: 1px solid #c90e00;
-
+  background: #fdeceb;
+  border: 1px solid #f2cfcc;
 }
 
 .tarjeta {
-
-  border: 1px solid #e0eaec;
-
-  border-radius: 14px;
-
-  overflow: hidden;
-
-  align-self: flex-start;
-
   width: 100%;
-
-  background: rgba(255, 255, 255, 0.96);
-
-  box-shadow: 0 9px 24px rgba(42, 76, 82, 0.07) !important;
-
+  align-self: flex-start;
+  overflow: hidden;
+  border: 1px solid #e1e8eb;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow: 0 9px 26px rgba(31, 67, 73, 0.065) !important;
 }
 
-
+.tarjeta:hover {
+  box-shadow: 0 13px 30px rgba(31, 67, 73, 0.11) !important;
+}
 
 .pago-pendiente {
-
-  border-left: 6px solid #c62828;
-
+  border-left: 5px solid #d6534b;
 }
-
-
 
 .pago-abono {
-
-  border-left: 6px solid #f2a900;
-
-}
-
-.nombre-cliente {
-
-  font-size: 18px;
-
-  font-weight: bold;
-
-  color: #20383c;
-
-}
-
-
-
-.equipo {
-
-  color: #6b7280;
-
-  font-size: 15px;
-
-  line-height: 1.25;
-
+  border-left: 5px solid #e1a52f;
 }
 
 .tarjeta-cabecera {
-
-  padding: 14px 16px 12px;
-
+  padding: 17px 18px 15px;
 }
 
 .tarjeta-contenido {
+  padding: 16px 18px 13px;
+}
 
-  padding: 14px 16px 12px;
+.nombre-cliente {
+  color: #173f46;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.2;
+}
 
+.equipo {
+  margin-top: 4px;
+  color: #7a878d;
+  font-size: 13px;
+  line-height: 1.25;
 }
 
 .datos-grid {
-
   display: grid;
-
   grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  gap: 8px 18px;
-
+  gap: 9px 16px;
 }
 
 .dato {
-
   display: flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  margin-bottom: 0;
-
-  color: #555;
-
-  font-size: 15px;
-
-  line-height: 1.3;
-
+  align-items: flex-start;
+  gap: 9px;
   min-width: 0;
-
+  color: #56656a;
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .dato span {
-
   min-width: 0;
-
   overflow-wrap: anywhere;
-
 }
-
-
 
 .dato .q-icon {
-
-  color: #29626D;
-
-}
-
-.titulo-pequeno {
-
-  color: #6b7280;
-
-  font-size: 14px;
-
-  font-weight: 600;
-
-  line-height: 1.25;
-
-}
-
-.estado-bloque {
-
-  margin-top: 10px;
-
+  margin-top: 1px;
+  color: #2d7075;
 }
 
 .estados-grid {
-
   display: grid;
-
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
 
-  gap: 12px;
+.estado-bloque {
+  margin-top: 10px;
+  padding: 10px 11px;
+  border-radius: 11px;
+  background: #f7f9fa;
+}
 
+.titulo-pequeno {
+  color: #7a878d;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.45px;
 }
 
 .observaciones {
-
-  background: #f1f3f4;
-
-  border-radius: 10px;
-
-  padding: 10px 12px;
-
-  color: #555;
-
+  background: #f2f6f6;
+  color: #56656a;
 }
 
-.mensaje-vacio {
-
-  text-align: center;
-
-  padding: 70px 20px;
-
-  color: #777;
-
+:deep(.tarjeta .q-badge) {
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-
-
-.mensaje-vacio h4 {
-
-  margin-bottom: 8px;
-
-  color: #444;
-
-}
-
-
-
-.mensaje-vacio p {
-
-  margin-top: 5px;
-
-}
-
-:deep(.q-card) {
-
-  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
-
-}
-
-:deep(.q-dialog__inner) {
-
-  padding: 24px;
-
-}
-
-:deep(.q-btn) {
-
-  border-radius: 9px;
-
-  text-transform: none;
-
-  letter-spacing: 0;
-
-  transition: none !important;
-
-}
-
-:deep(.q-card),
-
-:deep(.q-field__control),
-
-:deep(.q-focus-helper) {
-
-  transition: none !important;
-
+:deep(.tarjeta .q-rating) {
+  margin-top: 4px;
 }
 
 :deep(.tarjeta .q-card__actions) {
+  min-height: 49px;
+  padding: 7px 12px 10px;
+  border-top: 1px solid #edf1f2;
+  background: #fbfcfc;
+}
 
-  padding: 8px 12px 12px;
+:deep(.tarjeta .q-btn) {
+  min-height: 34px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+}
 
+.mensaje-vacio {
+  margin-top: 8px;
+  padding: 75px 20px;
+  text-align: center;
+  color: #7b888d;
+  border: 1px dashed #cfdcde;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.mensaje-vacio .q-icon {
+  color: #6c969a;
+}
+
+.mensaje-vacio h4 {
+  margin: 14px 0 8px;
+  color: #30494e;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.mensaje-vacio p {
+  margin: 5px 0 12px;
+}
+
+:deep(.q-card) {
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+}
+
+:deep(.q-btn) {
+  border-radius: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+:deep(.q-card),
+:deep(.q-field__control) {
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 :deep(.q-field--outlined .q-field__control:before) {
-
-  border-color: #d7e4e6;
-
+  border-color: #d8e3e5;
 }
 
 :deep(.q-field--outlined.q-field--focused .q-field__control:after) {
+  border-color: #2d7075;
+}
 
-  border-color: #347b7b;
-
+:deep(.q-dialog__inner) {
+  padding: 20px;
 }
 
 .modal {
-
   width: 600px;
-
   max-width: 95vw;
-
-  border-radius: 14px;
-
-  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
-
+  border-radius: 18px;
+  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
 }
 
 .confirmacion {
-
   width: 450px;
-
   max-width: 95vw;
-
-  border-radius: 14px;
-
-  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
-
+  border-radius: 18px;
+  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
 }
 
 .calificacion-modal {
-
   width: 410px;
-
   max-width: 95vw;
-
-  border-radius: 14px;
-
-  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
-
+  border-radius: 18px;
+  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
 }
 
 @media (max-width: 600px) {
-
   .pagina {
+    padding: 14px 12px 35px;
+  }
 
-    padding: 12px;
+  .barra-superior {
+    min-height: 68px;
+    padding: 9px 12px;
+  }
 
+  .marca-header {
+    gap: 9px;
+  }
+
+  .marca-header .q-avatar {
+    width: 38px;
+    height: 38px;
   }
 
   .titulo {
-
     font-size: 17px;
-
   }
 
   .subtitulo {
-
     display: none;
-
   }
 
-  .header .q-btn {
+  .boton-nuevo {
+    margin-left: 8px;
+    padding: 0 10px;
+    min-height: 38px;
+  }
 
+  .boton-nuevo .q-icon {
+    margin-right: 0;
+  }
+
+  .boton-nuevo :deep(.q-btn__content) {
     font-size: 11px;
+  }
 
+  .buscador :deep(.q-card__section) {
+    padding: 13px;
+  }
+
+  .estadistica {
+    border-radius: 15px;
+  }
+
+  .numero {
+    font-size: 26px;
   }
 
   .tarjeta {
-
-    border-radius: 15px;
-
+    border-radius: 16px;
   }
 
-  .datos-grid {
-
-    grid-template-columns: 1fr;
-
-  }
-
+  .datos-grid,
   .estados-grid {
-
     grid-template-columns: 1fr;
-
   }
 
+  .tarjeta-cabecera,
+  .tarjeta-contenido {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .mensaje-vacio {
+    padding: 55px 16px;
+  }
 }
 
 </style>
