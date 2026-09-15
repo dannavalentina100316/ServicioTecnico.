@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <!-- Barra Superior / Header Original -->
+    <!-- Header Original -->
     <q-header class="header" elevated>
       <q-toolbar class="barra-superior">
         <div class="marca-header cursor-pointer" @click="resetearFiltros">
@@ -8,7 +8,6 @@
             color="white"
             text-color="primary"
             size="44px"
-            class="shadow-2"
           >
             <q-icon name="build" size="24px" />
           </q-avatar>
@@ -17,7 +16,7 @@
               Servicio Técnico
             </div>
             <div class="subtitulo">
-              Taller de Celulares y Tablets - Don Efraín
+              Gestión de celulares y tablets - Don Efraín
             </div>
           </q-toolbar-title>
         </div>
@@ -28,7 +27,7 @@
           color="white"
           text-color="primary"
           unelevated
-          class="boton-nuevo shadow-1"
+          class="boton-nuevo"
           @click="abrirNuevoServicio"
         />
       </q-toolbar>
@@ -37,12 +36,11 @@
     <q-page-container>
       <q-page class="pagina">
 
-        <!-- Tarjetas de Estadísticas / Navegación rápida interactiva -->
+        <!-- Tarjetas de Estadísticas / Accesos Rápidos -->
         <div class="row q-col-gutter-md q-mb-md">
-          <!-- Tarjeta 1: Total de servicios -->
           <div class="col-12 col-sm-6 col-md-3">
             <q-card
-              class="estadistica cursor-pointer transition-card"
+              class="estadistica cursor-pointer"
               :class="{ 'tarjeta-activa': filtroEstado === 'todos' && filtroPago === 'todos' }"
               @click="seleccionarFiltroRapido('todos')"
             >
@@ -64,10 +62,9 @@
             </q-card>
           </div>
 
-          <!-- Tarjeta 2: En reparación -->
           <div class="col-12 col-sm-6 col-md-3">
             <q-card
-              class="estadistica cursor-pointer transition-card"
+              class="estadistica cursor-pointer"
               :class="{ 'tarjeta-activa': filtroEstado === 'en reparación' }"
               @click="seleccionarFiltroRapido('en reparación')"
             >
@@ -89,10 +86,9 @@
             </q-card>
           </div>
 
-          <!-- Tarjeta 3: Listos para entregar -->
           <div class="col-12 col-sm-6 col-md-3">
             <q-card
-              class="estadistica cursor-pointer transition-card"
+              class="estadistica cursor-pointer"
               :class="{ 'tarjeta-activa': filtroEstado === 'listo para entregar' }"
               @click="seleccionarFiltroRapido('listo para entregar')"
             >
@@ -114,10 +110,9 @@
             </q-card>
           </div>
 
-          <!-- Tarjeta 4: Pagos pendientes / Abonos (Cuánto se fio) -->
           <div class="col-12 col-sm-6 col-md-3">
             <q-card
-              class="estadistica cursor-pointer transition-card"
+              class="estadistica cursor-pointer"
               :class="{ 'tarjeta-activa': filtroPago === 'con-saldo' }"
               @click="seleccionarFiltroRapido('con-saldo')"
             >
@@ -140,10 +135,9 @@
           </div>
         </div>
 
-        <!-- Barra de Navegación, Búsqueda y Filtros Mejorada -->
+        <!-- Buscador y Filtros de Navegación -->
         <q-card class="buscador q-mb-lg">
           <q-card-section class="q-pa-md">
-            <!-- Fila superior: Input de búsqueda + Selector de orden -->
             <div class="row q-col-gutter-sm items-center">
               <div class="col-12 col-md-8">
                 <q-input
@@ -155,8 +149,7 @@
                   clearable
                   dense
                   label="Buscar cliente, equipo, técnico o falla"
-                  placeholder="Ej: Danna, Samsung A15, iPhone, cambio de pantalla..."
-                  class="input-busqueda"
+                  placeholder="Ej: Danna, Samsung A15, iPhone, pantalla..."
                 >
                   <template v-slot:prepend>
                     <q-icon name="search" color="primary" />
@@ -175,7 +168,6 @@
                   :options="opcionesOrden"
                   emit-value
                   map-options
-                  class="select-orden"
                 >
                   <template v-slot:prepend>
                     <q-icon name="sort" color="primary" />
@@ -184,7 +176,7 @@
               </div>
             </div>
 
-            <!-- Fila inferior: Pestañas / Chips de Filtrado Rápido -->
+            <!-- Chips de Filtros Rápidos (Sin numeritos) -->
             <div class="filtros-navegacion q-mt-sm">
               <span class="etiqueta-filtrar text-weight-bold q-mr-sm">
                 Filtrar:
@@ -276,7 +268,6 @@
                   color="primary"
                   label="Restablecer filtros"
                   icon="refresh"
-                  class="q-ml-sm"
                   @click="resetearFiltros"
                 />
               </div>
@@ -284,7 +275,7 @@
           </q-card-section>
         </q-card>
 
-        <!-- Mensaje cuando la lista total de servicios está vacía -->
+        <!-- Mensaje cuando no hay registros -->
         <div
           v-if="servicios.length === 0"
           class="mensaje-vacio"
@@ -292,13 +283,12 @@
           <q-icon
             name="phone_android"
             size="80px"
-            color="grey-5"
           />
           <h4>
             No hay servicios registrados
           </h4>
           <p>
-            Comienza registrando el primer equipo que Don Efraín recibe en el taller.
+            Comienza registrando el primer equipo del taller.
           </p>
           <q-btn
             label="Registrar servicio"
@@ -310,7 +300,7 @@
           />
         </div>
 
-        <!-- Listado de Tarjetas de Servicios -->
+        <!-- Listado de Tarjetas -->
         <div
           v-else-if="serviciosFiltrados.length > 0"
           class="row q-col-gutter-md"
@@ -321,7 +311,7 @@
             class="col-12 col-md-6 col-lg-4"
           >
             <q-card
-              class="tarjeta transition-card"
+              class="tarjeta"
               :class="{
                 'pago-pendiente': resultado.servicio.estadoPago === 'pendiente',
                 'pago-abono': resultado.servicio.estadoPago === 'abono',
@@ -329,7 +319,6 @@
                 'equipo-listo': resultado.servicio.estadoEquipo === 'listo para entregar'
               }"
             >
-              <!-- Cabecera de la tarjeta -->
               <q-card-section class="tarjeta-cabecera">
                 <div class="row items-center justify-between no-wrap">
                   <div class="row items-center no-wrap ellipsis">
@@ -352,7 +341,6 @@
                     </div>
                   </div>
 
-                  <!-- Ícono destacado de estado del equipo -->
                   <div class="q-ml-sm text-right">
                     <q-badge
                       v-if="resultado.servicio.estadoEquipo === 'recibido'"
@@ -378,7 +366,7 @@
                       v-else-if="resultado.servicio.estadoEquipo === 'listo para entregar'"
                       color="green-1"
                       text-color="green-9"
-                      class="q-pa-xs badge-estado badge-pulse"
+                      class="q-pa-xs badge-estado"
                     >
                       <q-icon name="check_circle" size="20px" class="q-mr-xs" />
                       ¡Listo!
@@ -399,10 +387,8 @@
 
               <q-separator />
 
-              <!-- Contenido principal de la tarjeta -->
               <q-card-section class="tarjeta-contenido">
                 <div class="datos-grid">
-                  <!-- Reparación requerida -->
                   <div class="dato">
                     <q-icon name="build" />
                     <span>
@@ -410,7 +396,6 @@
                     </span>
                   </div>
 
-                  <!-- Técnico a cargo -->
                   <div class="dato">
                     <q-icon name="person" />
                     <span>
@@ -418,7 +403,6 @@
                     </span>
                   </div>
 
-                  <!-- Fecha de ingreso -->
                   <div class="dato">
                     <q-icon name="schedule" />
                     <span>
@@ -426,7 +410,6 @@
                     </span>
                   </div>
 
-                  <!-- Precio pactado -->
                   <div class="dato">
                     <q-icon name="attach_money" />
                     <span>
@@ -434,7 +417,6 @@
                     </span>
                   </div>
 
-                  <!-- Método de pago -->
                   <div class="dato">
                     <q-icon name="payments" />
                     <span>
@@ -442,7 +424,6 @@
                     </span>
                   </div>
 
-                  <!-- Teléfono / Contacto (si fue registrado) -->
                   <div class="dato" v-if="resultado.servicio.telefono">
                     <q-icon name="phone" />
                     <span>
@@ -451,9 +432,7 @@
                   </div>
                 </div>
 
-                <!-- Bloques de Estado y Deuda / Fiado -->
                 <div class="estados-grid q-mt-md">
-                  <!-- Estado del Equipo con botón de avance rápido de estado para Don Efraín -->
                   <div class="estado-bloque">
                     <div class="titulo-pequeno">
                       Estado del equipo
@@ -489,7 +468,7 @@
                         Entregado
                       </q-badge>
 
-                      <!-- Botón de avance rápido de estado (Gran ayuda a la navegabilidad) -->
+                      <!-- Avance rápido de estado -->
                       <q-btn
                         v-if="resultado.servicio.estadoEquipo !== 'entregado'"
                         flat
@@ -501,15 +480,10 @@
                         class="q-ml-sm"
                         title="Avanzar estado del equipo"
                         @click="avanzarEstadoRapido(resultado.indice)"
-                      >
-                        <q-tooltip>
-                          Avanzar a: {{ siguienteEstadoNombre(resultado.servicio.estadoEquipo) }}
-                        </q-tooltip>
-                      </q-btn>
+                      />
                     </div>
                   </div>
 
-                  <!-- Estado del Pago y Cuánto se le fio al cliente -->
                   <div class="estado-bloque">
                     <div class="titulo-pequeno">
                       Estado del pago
@@ -521,7 +495,7 @@
                         color="positive"
                         class="q-py-xs q-px-sm"
                       >
-                        ✓ Pagado completo
+                        ✓ Pagado
                       </q-badge>
 
                       <div v-else-if="resultado.servicio.estadoPago === 'abono'">
@@ -552,7 +526,6 @@
                   </div>
                 </div>
 
-                <!-- Calificación del cliente (Estrellas) -->
                 <div
                   v-if="resultado.servicio.calificacion > 0"
                   class="estado-bloque q-mt-sm"
@@ -575,7 +548,6 @@
                   </div>
                 </div>
 
-                <!-- Observaciones técnicas / Estado de ingreso -->
                 <div
                   v-if="resultado.servicio.observaciones"
                   class="observaciones estado-bloque q-mt-sm"
@@ -587,10 +559,8 @@
                 </div>
               </q-card-section>
 
-              <!-- Botones de Acción -->
               <q-card-actions align="between" class="tarjeta-acciones">
                 <div>
-                  <!-- Botón de WhatsApp rápido si tiene teléfono y está listo -->
                   <q-btn
                     v-if="resultado.servicio.telefono && resultado.servicio.estadoEquipo === 'listo para entregar'"
                     flat
@@ -598,15 +568,12 @@
                     dense
                     color="positive"
                     icon="chat"
-                    title="Notificar cliente por WhatsApp"
+                    title="Avisar por WhatsApp"
                     @click="abrirWhatsApp(resultado.servicio)"
-                  >
-                    <q-tooltip>Avisar al cliente por WhatsApp</q-tooltip>
-                  </q-btn>
+                  />
                 </div>
 
                 <div class="row items-center q-gutter-xs">
-                  <!-- Botón de Calificar (si está entregado y pagado pero no calificado) -->
                   <q-btn
                     v-if="resultado.servicio.estadoEquipo === 'entregado' && resultado.servicio.estadoPago === 'pagado' && !resultado.servicio.calificacion"
                     flat
@@ -617,7 +584,6 @@
                     @click="abrirCalificacion(resultado.servicio)"
                   />
 
-                  <!-- Botón de Editar -->
                   <q-btn
                     v-if="resultado.servicio.estadoEquipo !== 'entregado'"
                     flat
@@ -628,7 +594,6 @@
                     @click="editarServicio(resultado.indice)"
                   />
 
-                  <!-- Botón de Eliminar -->
                   <q-btn
                     v-if="resultado.servicio.estadoEquipo !== 'entregado'"
                     flat
@@ -644,7 +609,6 @@
           </div>
         </div>
 
-        <!-- Mensaje cuando los filtros o búsqueda no arrojan resultados -->
         <div
           v-else
           class="mensaje-vacio"
@@ -652,7 +616,6 @@
           <q-icon
             name="search_off"
             size="70px"
-            color="grey-6"
           />
           <h4>
             No encontramos resultados
@@ -674,31 +637,23 @@
           />
         </div>
 
-        <!-- Botón flotante para Don Efraín en dispositivos móviles (Navegabilidad rápida) -->
+        <!-- Botón flotante para celular -->
         <q-page-sticky position="bottom-right" :offset="[20, 20]">
           <q-btn
             fab
             icon="add"
             color="primary"
             text-color="white"
-            class="shadow-5"
             @click="abrirNuevoServicio"
-          >
-            <q-tooltip anchor="top middle" self="bottom middle">
-              Registrar nuevo servicio
-            </q-tooltip>
-          </q-btn>
+          />
         </q-page-sticky>
 
-        <!-- Modal: Registrar / Editar Servicio -->
+        <!-- Modal Formulario Nuevo / Editar -->
         <q-dialog v-model="mostrarModal" persistent>
           <q-card class="modal">
             <q-card-section class="row items-center modal-header">
-              <div class="row items-center">
-                <q-icon :name="editando ? 'edit' : 'add_circle'" size="26px" color="primary" class="q-mr-sm" />
-                <div class="text-h6 text-weight-bold">
-                  {{ editando ? 'Editar servicio técnico' : 'Nuevo servicio técnico' }}
-                </div>
+              <div class="text-h6 text-weight-bold">
+                {{ editando ? 'Editar servicio' : 'Nuevo servicio' }}
               </div>
               <q-space />
               <q-btn
@@ -714,7 +669,6 @@
 
             <q-form @submit="guardarServicio">
               <q-card-section class="modal-cuerpo q-pa-md">
-                <!-- Nombre del cliente -->
                 <q-input
                   v-model="formulario.cliente"
                   label="Nombre del cliente *"
@@ -722,13 +676,8 @@
                   dense
                   :rules="[reglaNombre]"
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="person" />
-                  </template>
-                </q-input>
+                />
 
-                <!-- Teléfono (Opcional pero muy útil para el taller) -->
                 <q-input
                   v-model="formulario.telefono"
                   label="Teléfono / Celular (opcional)"
@@ -736,13 +685,8 @@
                   outlined
                   dense
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="phone" />
-                  </template>
-                </q-input>
+                />
 
-                <!-- Marca y Modelo en dos columnas -->
                 <div class="row q-col-gutter-sm q-mb-sm">
                   <div class="col-12 col-sm-6">
                     <q-select
@@ -778,7 +722,6 @@
                   </div>
                 </div>
 
-                <!-- Tipo de Reparación -->
                 <q-select
                   v-model="formulario.reparacion"
                   label="Tipo de reparación *"
@@ -789,25 +732,19 @@
                   use-chips
                   :rules="[reglaObligatoria]"
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="build" />
-                  </template>
-                </q-select>
+                />
 
-                <!-- Campo Otro servicio -->
                 <q-input
                   v-if="formulario.reparacion.includes('Otros')"
                   v-model="formulario.reparacionOtro"
                   label="Especifica el otro tipo de servicio *"
-                  placeholder="Ej: Reparación de cámara frontal"
+                  placeholder="Ej: Reparación de cámara"
                   outlined
                   dense
                   :rules="[reglaOtro]"
                   class="q-mb-sm"
                 />
 
-                <!-- Técnico a cargo -->
                 <q-select
                   v-model="formulario.tecnico"
                   label="Técnico que atendió *"
@@ -816,13 +753,8 @@
                   :options="tecnicos"
                   :rules="[reglaObligatoria]"
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="badge" />
-                  </template>
-                </q-select>
+                />
 
-                <!-- Fecha y hora de recepción -->
                 <q-input
                   :model-value="formatoFecha(formulario.fecha)"
                   label="Fecha y hora de recepción *"
@@ -830,13 +762,8 @@
                   dense
                   readonly
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="schedule" />
-                  </template>
-                </q-input>
+                />
 
-                <!-- Precios y Métodos de pago -->
                 <div class="row q-col-gutter-sm q-mb-sm">
                   <div class="col-12 col-sm-6">
                     <q-input
@@ -850,11 +777,7 @@
                       outlined
                       dense
                       :rules="[reglaPrecio]"
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="attach_money" />
-                      </template>
-                    </q-input>
+                    />
                   </div>
                   <div class="col-12 col-sm-6">
                     <q-select
@@ -864,15 +787,10 @@
                       dense
                       :options="metodosPago"
                       :rules="[reglaObligatoria]"
-                    >
-                      <template v-slot:prepend>
-                        <q-icon name="payments" />
-                      </template>
-                    </q-select>
+                    />
                   </div>
                 </div>
 
-                <!-- Estado del pago -->
                 <q-select
                   v-model="formulario.estadoPago"
                   label="Estado del pago *"
@@ -883,7 +801,6 @@
                   class="q-mb-sm"
                 />
 
-                <!-- Valor de Abono condicional -->
                 <q-input
                   v-if="formulario.estadoPago === 'abono'"
                   v-model="formulario.montoAbono"
@@ -897,13 +814,8 @@
                   dense
                   :rules="[reglaAbono]"
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="price_check" />
-                  </template>
-                </q-input>
+                />
 
-                <!-- Estado del equipo -->
                 <q-select
                   v-model="formulario.estadoEquipo"
                   label="Estado del equipo *"
@@ -913,22 +825,15 @@
                   :disable="!editando"
                   :rules="[reglaObligatoria]"
                   class="q-mb-sm"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="devices" />
-                  </template>
-                </q-select>
+                />
 
-                <!-- Alerta si se intenta entregar sin estar pagado -->
                 <div
                   v-if="mostrarErrorEntrega"
-                  class="q-pa-sm bg-red-1 text-negative rounded-borders q-mb-sm text-caption row items-center"
+                  class="q-pa-sm bg-red-1 text-negative rounded-borders q-mb-sm text-caption"
                 >
-                  <q-icon name="warning" size="18px" class="q-mr-xs" />
-                  <span>Para entregar el equipo al cliente, el estado del pago debe ser <strong>pagado</strong>.</span>
+                  Para entregar el equipo al cliente, el estado del pago debe ser <strong>pagado</strong>.
                 </div>
 
-                <!-- Observaciones -->
                 <q-input
                   v-model="formulario.observaciones"
                   label="Observaciones (opcional)"
@@ -936,7 +841,7 @@
                   dense
                   type="textarea"
                   rows="2"
-                  placeholder="Ej: Pantalla partida en la esquina superior, cliente pide respaldar fotos..."
+                  placeholder="Ej: Pantalla partida en la esquina superior..."
                 />
               </q-card-section>
 
@@ -946,7 +851,7 @@
                 <q-btn
                   label="Cancelar"
                   flat
-                  color="grey-7"
+                  color="grey"
                   @click="cerrarModal"
                 />
                 <q-btn
@@ -960,103 +865,88 @@
           </q-card>
         </q-dialog>
 
-        <!-- Modal: Calificación del Cliente -->
+        <!-- Modal Calificación -->
         <q-dialog v-model="mostrarCalificacion">
           <q-card class="calificacion-modal">
-            <q-card-section class="bg-primary text-white row items-center justify-between">
+            <q-card-section>
               <div class="text-h6">
                 Calificación del cliente
               </div>
-              <q-btn icon="close" flat round dense @click="cerrarCalificacion" />
+              <div class="text-grey-7 q-mt-sm">
+                {{ servicioCalificar?.cliente }} - {{ servicioCalificar?.marca }} {{ servicioCalificar?.modelo }}
+              </div>
             </q-card-section>
 
-            <q-card-section class="q-pa-md">
-              <div class="text-subtitle1 text-weight-bold">
-                {{ servicioCalificar?.cliente }}
-              </div>
-              <div class="text-grey-7">
-                {{ servicioCalificar?.marca }} {{ servicioCalificar?.modelo }}
-              </div>
-              <p class="text-caption text-grey-8 q-mt-sm">
-                Don Efraín, pídale al cliente que califique el servicio de reparación recibido:
-              </p>
-
-              <div class="text-center q-py-md">
-                <q-rating
-                  v-model="calificacionPendiente"
-                  size="44px"
-                  color="amber-8"
-                  icon="star_border"
-                  icon-selected="star"
-                />
-                <div
-                  v-if="mostrarErrorCalificacion"
-                  class="text-negative text-caption q-mt-sm text-weight-bold"
-                >
-                  Selecciona al menos una estrella para guardar la calificación.
-                </div>
+            <q-card-section class="text-center">
+              <q-rating
+                v-model="calificacionPendiente"
+                size="42px"
+                color="amber-8"
+                icon="star_border"
+                icon-selected="star"
+              />
+              <div
+                v-if="mostrarErrorCalificacion"
+                class="text-negative text-caption q-mt-sm"
+              >
+                Selecciona una calificación para continuar.
               </div>
             </q-card-section>
 
             <q-separator />
 
-            <q-card-actions align="right" class="q-pa-md">
+            <q-card-actions align="right">
               <q-btn
-                label="Omitir"
+                label="Cancelar"
                 flat
-                color="grey-7"
                 @click="cerrarCalificacion"
               />
               <q-btn
                 label="Guardar calificación"
                 color="primary"
                 unelevated
-                icon="check"
                 @click="guardarCalificacion"
               />
             </q-card-actions>
           </q-card>
         </q-dialog>
 
-        <!-- Modal: Confirmar Eliminación -->
+        <!-- Modal Confirmación Eliminación -->
         <q-dialog v-model="mostrarConfirmacion">
           <q-card class="confirmacion">
             <q-card-section class="row items-center">
               <q-avatar
                 color="negative"
                 text-color="white"
-                size="44px"
               >
                 <q-icon name="delete" />
               </q-avatar>
               <div class="q-ml-md">
-                <div class="text-h6 text-weight-bold">
+                <div class="text-h6">
                   Eliminar servicio
                 </div>
-                <div class="text-grey-7 text-caption">
+                <div class="text-grey-7">
                   Esta acción no se puede deshacer.
                 </div>
               </div>
             </q-card-section>
 
-            <q-card-section class="q-pt-none">
-              ¿Está seguro de que desea eliminar este registro de reparación del taller?
+            <q-card-section>
+              ¿Está seguro de que desea eliminar este servicio?
             </q-card-section>
 
             <q-separator />
 
-            <q-card-actions align="right" class="q-pa-md">
+            <q-card-actions align="right">
               <q-btn
                 label="Cancelar"
                 flat
-                color="grey-7"
                 @click="cerrarConfirmacion"
               />
               <q-btn
-                label="Eliminar registro"
+                label="Eliminar"
                 color="negative"
                 unelevated
-                icon="delete_forever"
                 @click="eliminarServicio"
               />
             </q-card-actions>
@@ -1072,7 +962,7 @@
 import { ref } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 
-// Datos iniciales de muestra basados en el taller de Don Efraín
+// Datos iniciales de ejemplo
 const datosEjemplo = [
   {
     cliente: 'Carlos Mendoza',
@@ -1089,7 +979,7 @@ const datosEjemplo = [
     estadoPago: 'abono',
     estadoEquipo: 'en reparación',
     calificacion: 0,
-    observaciones: 'Pantalla con líneas verdes y táctil fallando. Cliente pide respaldar fotos.'
+    observaciones: 'Pantalla con líneas verdes. Cliente pide respaldar fotos.'
   },
   {
     cliente: 'María Fernanda Ruiz',
@@ -1106,7 +996,7 @@ const datosEjemplo = [
     estadoPago: 'pendiente',
     estadoEquipo: 'recibido',
     calificacion: 0,
-    observaciones: 'Batería inflada, no retiene carga más de 20 minutos.'
+    observaciones: 'Batería inflada, no retiene carga.'
   },
   {
     cliente: 'Julián Castro',
@@ -1123,7 +1013,7 @@ const datosEjemplo = [
     estadoPago: 'pendiente',
     estadoEquipo: 'listo para entregar',
     calificacion: 0,
-    observaciones: 'Pin sulfatado. Se reemplazó y carga perfectamente a 33W.'
+    observaciones: 'Pin sulfatado reemplazado con éxito.'
   },
   {
     cliente: 'Laura Gómez',
@@ -1140,14 +1030,14 @@ const datosEjemplo = [
     estadoPago: 'pagado',
     estadoEquipo: 'entregado',
     calificacion: 5,
-    observaciones: 'Se eliminó cuenta olvidada y se actualizó a la última versión.'
+    observaciones: 'Equipo entregado a satisfacción.'
   }
 ]
 
-// Persistencia con useLocalStorage según restricción
+// Persistencia obligatoria con useLocalStorage
 const servicios = useLocalStorage('servicios-tecnicos', datosEjemplo)
 
-// Estados de interfaz reactivos usando únicamente ref()
+// Estados con ref() únicamente
 const mostrarModal = ref(false)
 const mostrarConfirmacion = ref(false)
 const editando = ref(false)
@@ -1160,9 +1050,9 @@ const mostrarCalificacion = ref(false)
 const servicioCalificar = ref(null)
 const calificacionPendiente = ref(0)
 
-// Estados de Navegabilidad y Filtrado
-const filtroEstado = ref('todos') // 'todos', 'recibido', 'en reparación', 'listo para entregar', 'entregado'
-const filtroPago = ref('todos') // 'todos', 'con-saldo', 'pagado'
+// Estados de filtrado y orden
+const filtroEstado = ref('todos')
+const filtroPago = ref('todos')
 const criterioOrden = ref('recientes')
 
 const opcionesOrden = [
@@ -1271,7 +1161,7 @@ const estadosEquipo = [
   'entregado'
 ]
 
-// Validaciones usando reglas de Quasar
+// Reglas de validación Quasar
 function reglaObligatoria(valor) {
   if (
     valor === null ||
@@ -1327,7 +1217,7 @@ function reglaAbono(valor) {
     return 'El abono debe ser mayor a cero'
   }
   if (abonoNum >= precioNum) {
-    return 'El abono debe ser menor que el precio total (si pagó todo, elija "pagado")'
+    return 'El abono debe ser menor al precio total'
   }
   return true
 }
@@ -1361,7 +1251,7 @@ function formatoFecha(valor) {
   const [fecha, hora = ''] = String(valor).replace(' ', 'T').split('T')
   const [anio, mes, dia] = fecha.split('-')
   if (!anio || !mes || !dia) return valor
-  return `${dia}/${mes}/${anio}${hora ? ` - ${hora.slice(0, 5)}` : ''}`
+  return `${dia}/${mes}/${anio}${hora ? ` ${hora.slice(0, 5)}` : ''}`
 }
 
 function textoReparaciones(servicio) {
@@ -1382,7 +1272,7 @@ function calcularDeuda(servicio) {
     const abono = numeroSinFormato(servicio.montoAbono)
     return Math.max(0, precio - abono)
   }
-  return precio // pendiente completo
+  return precio
 }
 
 function calcularTotalPendienteCobro() {
@@ -1393,30 +1283,10 @@ function calcularTotalPendienteCobro() {
   return total
 }
 
-function contarConSaldoPendiente() {
-  let cuenta = 0
-  for (let i = 0; i < servicios.value.length; i++) {
-    if (servicios.value[i].estadoPago === 'pendiente' || servicios.value[i].estadoPago === 'abono') {
-      cuenta++
-    }
-  }
-  return cuenta
-}
-
 function contarEstado(estado) {
   let cantidad = 0
   for (let i = 0; i < servicios.value.length; i++) {
     if (servicios.value[i].estadoEquipo === estado) {
-      cantidad++
-    }
-  }
-  return cantidad
-}
-
-function contarPago(estado) {
-  let cantidad = 0
-  for (let i = 0; i < servicios.value.length; i++) {
-    if (servicios.value[i].estadoPago === estado) {
       cantidad++
     }
   }
@@ -1430,7 +1300,7 @@ function iconoPorMarca(marca) {
   return 'phone_android'
 }
 
-// Búsqueda, Filtrado y Ordenamiento usando funciones estándar y ref
+// Búsqueda y filtrado con ref() y funciones normales
 const serviciosFiltrados = ref([])
 
 function buscarServicios() {
@@ -1440,23 +1310,16 @@ function buscarServicios() {
   for (let i = 0; i < servicios.value.length; i++) {
     const serv = servicios.value[i]
 
-    // Filtro por Estado de Equipo
     if (filtroEstado.value !== 'todos' && serv.estadoEquipo !== filtroEstado.value) {
       continue
     }
 
-    // Filtro por Estado de Pago
     if (filtroPago.value === 'con-saldo') {
       if (serv.estadoPago !== 'pendiente' && serv.estadoPago !== 'abono') {
         continue
       }
-    } else if (filtroPago.value === 'pagado') {
-      if (serv.estadoPago !== 'pagado') {
-        continue
-      }
     }
 
-    // Búsqueda de texto enriquecida (cliente, equipo, marca, modelo, técnico, fallas)
     if (texto) {
       const cliente = String(serv.cliente || '').toLowerCase()
       const equipo = [serv.marca, serv.modelo, serv.equipo].filter(Boolean).join(' ').toLowerCase()
@@ -1482,7 +1345,6 @@ function buscarServicios() {
     })
   }
 
-  // Ordenamiento
   if (criterioOrden.value === 'recientes') {
     resultados.sort((a, b) => new Date(b.servicio.fecha) - new Date(a.servicio.fecha))
   } else if (criterioOrden.value === 'antiguos') {
@@ -1498,7 +1360,6 @@ function buscarServicios() {
   serviciosFiltrados.value = resultados
 }
 
-// Navegabilidad con filtros rápidos
 function cambiarFiltroEstado(estado) {
   filtroEstado.value = estado
   filtroPago.value = 'todos'
@@ -1529,14 +1390,7 @@ function resetearFiltros() {
   buscarServicios()
 }
 
-// Avance rápido de estado directamente desde la tarjeta (Mejora clave de navegabilidad)
-function siguienteEstadoNombre(estadoActual) {
-  if (estadoActual === 'recibido') return 'En reparación'
-  if (estadoActual === 'en reparación') return 'Listo para entregar'
-  if (estadoActual === 'listo para entregar') return 'Entregado'
-  return ''
-}
-
+// Avance rápido de estado
 function avanzarEstadoRapido(indice) {
   if (indice < 0 || indice >= servicios.value.length) return
   const serv = servicios.value[indice]
@@ -1547,7 +1401,6 @@ function avanzarEstadoRapido(indice) {
     serv.estadoEquipo = 'listo para entregar'
   } else if (serv.estadoEquipo === 'listo para entregar') {
     if (serv.estadoPago !== 'pagado') {
-      // Don Efraín debe cobrar antes de entregar
       editarServicio(indice)
       mostrarErrorEntrega.value = true
       return
@@ -1558,17 +1411,15 @@ function avanzarEstadoRapido(indice) {
   buscarServicios()
 }
 
-// WhatsApp directo al cliente para avisarle que su equipo está listo
 function abrirWhatsApp(servicio) {
   if (!servicio.telefono) return
   const telefonoLimpio = String(servicio.telefono).replace(/[^0-9]/g, '')
   const mensaje = encodeURIComponent(
-    `Hola ${servicio.cliente}, te escribimos del taller de Don Efraín. Te informamos que tu equipo (${servicio.marca} ${servicio.modelo || ''}) ya está listo para entregar. Saldo pendiente: ${formatoPesos(calcularDeuda(servicio))}. ¡Te esperamos!`
+    `Hola ${servicio.cliente}, te escribimos del taller de Don Efraín. Tu equipo (${servicio.marca} ${servicio.modelo || ''}) ya está listo para entregar. Saldo pendiente: ${formatoPesos(calcularDeuda(servicio))}. ¡Te esperamos!`
   )
   window.open(`https://wa.me/57${telefonoLimpio}?text=${mensaje}`, '_blank')
 }
 
-// Operaciones CRUD
 function limpiarFormulario() {
   formulario.value = crearFormulario()
   actualizarModelos()
@@ -1648,14 +1499,13 @@ function guardarServicio() {
     if (indiceEditar.value < 0 || indiceEditar.value >= servicios.value.length) return
     servicios.value[indiceEditar.value] = servicio
   } else {
-    servicios.value.unshift(servicio) // Agregar al principio para visibilidad inmediata
+    servicios.value.unshift(servicio)
   }
 
   buscarServicios()
 
   mostrarModal.value = false
   limpiarFormulario()
-  const estabaEditando = editando.value
   editando.value = false
   indiceEditar.value = -1
 
@@ -1712,16 +1562,16 @@ function eliminarServicio() {
   cerrarConfirmacion()
 }
 
-// Inicialización de la búsqueda para mostrar todos los servicios al abrir la app
+// Inicialización automática
 buscarServicios()
 </script>
 
 <style scoped>
 .pagina {
   background: linear-gradient(180deg, #f8fbfc 0%, #eef4f5 100%);
-  font-family: "Plus Jakarta Sans", "Avenir Next", "Trebuchet MS", sans-serif;
+  font-family: "Avenir Next", "Trebuchet MS", sans-serif;
   min-height: 100vh;
-  padding: 24px clamp(14px, 3.5vw, 48px) 48px;
+  padding: 30px clamp(16px, 4vw, 56px) 48px;
 }
 
 .header {
@@ -1730,8 +1580,8 @@ buscarServicios()
 }
 
 .barra-superior {
-  min-height: 72px;
-  padding: 8px clamp(14px, 3.5vw, 48px);
+  min-height: 76px;
+  padding: 10px clamp(16px, 4vw, 56px);
 }
 
 .marca-header {
@@ -1739,7 +1589,7 @@ buscarServicios()
   align-items: center;
   flex: 1;
   min-width: 0;
-  gap: 14px;
+  gap: 13px;
 }
 
 .boton-nuevo {
@@ -1748,29 +1598,26 @@ buscarServicios()
   font-weight: 700;
   text-transform: none;
   letter-spacing: 0;
-  margin-left: 14px;
+  margin-left: 18px;
 }
 
 .titulo {
-  font-size: 20px;
+  font-size: 21px;
   font-weight: bold;
   letter-spacing: 0.1px;
-  color: white;
 }
 
 .subtitulo {
-  font-size: 13px;
+  font-size: 14px;
   opacity: 0.9;
   letter-spacing: 0.2px;
-  color: #e0eaec;
 }
 
-/* Buscador y Controles de Navegación */
 .buscador {
   border: 1px solid #e0eaec;
   border-radius: 14px;
   background: white;
-  box-shadow: 0 6px 20px rgba(42, 76, 82, 0.06) !important;
+  box-shadow: 0 8px 24px rgba(42, 76, 82, 0.07) !important;
 }
 
 .filtros-navegacion {
@@ -1793,7 +1640,6 @@ buscarServicios()
   font-weight: 600;
   font-size: 12px;
   padding: 4px 12px;
-  position: relative;
 }
 
 .etiqueta-filtrar {
@@ -1801,19 +1647,17 @@ buscarServicios()
   color: #29626D;
 }
 
-/* Tarjetas de Estadísticas / Accesos directos */
 .estadistica {
   border: 1px solid #e0eaec;
   border-radius: 14px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 6px 20px rgba(42, 76, 82, 0.05) !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 22px rgba(42, 76, 82, 0.06) !important;
+  transition: transform 0.18s ease, border-color 0.18s ease;
 }
 
 .estadistica:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(42, 76, 82, 0.1) !important;
   border-color: #245c62;
 }
 
@@ -1825,30 +1669,28 @@ buscarServicios()
 .estadistica-contenido {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
 }
 
 .texto-estadistica {
   color: #6b7280;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 15px;
 }
 
 .numero {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: bold;
   color: #164b58;
-  line-height: 1.1;
 }
 
 .numero-dinero {
-  font-size: 22px;
+  font-size: 24px;
   color: #c62828;
 }
 
 .color-circle {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border-radius: 14px;
   flex-shrink: 0;
   display: flex;
@@ -1858,35 +1700,37 @@ buscarServicios()
 
 .color-circle.primary {
   background: #007bff;
+  border: 1px solid #0066d6;
 }
 
 .color-circle.warning {
-  background: #f59e0b;
+  background: #fed843;
+  border: 1px solid #e5bd26;
 }
 
 .color-circle.success {
   background: #10b981;
+  border: 1px solid #059669;
 }
 
 .color-circle.negative {
-  background: #ef4444;
+  background: #ec1000;
+  border: 1px solid #c90e00;
 }
 
-/* Tarjetas de Servicio Técnico */
 .tarjeta {
   border: 1px solid #e0eaec;
   border-radius: 14px;
   overflow: hidden;
   align-self: flex-start;
   width: 100%;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 8px 22px rgba(42, 76, 82, 0.06) !important;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 9px 24px rgba(42, 76, 82, 0.07) !important;
+  transition: transform 0.18s ease;
 }
 
 .tarjeta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(42, 76, 82, 0.11) !important;
 }
 
 .pago-pendiente {
@@ -1902,29 +1746,28 @@ buscarServicios()
 }
 
 .equipo-entregado {
-  opacity: 0.88;
+  opacity: 0.9;
   background: #fafbfc;
 }
 
 .nombre-cliente {
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: bold;
   color: #20383c;
 }
 
 .equipo {
-  color: #5d6f72;
-  font-size: 14px;
+  color: #6b7280;
+  font-size: 15px;
   line-height: 1.25;
-  font-weight: 500;
 }
 
 .tarjeta-cabecera {
-  padding: 14px 16px 10px;
+  padding: 14px 16px 12px;
 }
 
 .tarjeta-contenido {
-  padding: 12px 16px 10px;
+  padding: 14px 16px 12px;
 }
 
 .badge-estado {
@@ -1933,34 +1776,19 @@ buscarServicios()
   font-size: 12px;
 }
 
-.badge-pulse {
-  animation: pulse-border 2s infinite;
-}
-
-@keyframes pulse-border {
-  0% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-  }
-}
-
 .datos-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 14px;
+  gap: 8px 18px;
 }
 
 .dato {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #4a5568;
-  font-size: 14px;
+  gap: 10px;
+  margin-bottom: 0;
+  color: #555;
+  font-size: 15px;
   line-height: 1.3;
   min-width: 0;
 }
@@ -1972,28 +1800,23 @@ buscarServicios()
 
 .dato .q-icon {
   color: #29626D;
-  font-size: 18px;
 }
 
 .titulo-pequeno {
-  color: #64748b;
-  font-size: 12px;
+  color: #6b7280;
+  font-size: 14px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  line-height: 1.25;
 }
 
 .estado-bloque {
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 .estados-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-  padding: 8px 10px;
-  background: #f8fafb;
-  border-radius: 10px;
 }
 
 .deuda-texto {
@@ -2002,11 +1825,10 @@ buscarServicios()
 }
 
 .observaciones {
-  background: #f1f5f6;
-  border-radius: 8px;
-  padding: 8px 12px;
-  color: #475569;
-  border-left: 3px solid #29626D;
+  background: #f1f3f4;
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #555;
 }
 
 .tarjeta-acciones {
@@ -2016,48 +1838,35 @@ buscarServicios()
 
 .mensaje-vacio {
   text-align: center;
-  padding: 60px 20px;
-  color: #64748b;
+  padding: 70px 20px;
+  color: #777;
 }
 
 .mensaje-vacio h4 {
-  margin: 12px 0 6px;
-  color: #334155;
-  font-size: 22px;
-  font-weight: 700;
+  margin-bottom: 8px;
+  color: #444;
 }
 
 .mensaje-vacio p {
-  margin-top: 4px;
-  font-size: 15px;
+  margin-top: 5px;
 }
 
-/* Modales */
 .modal {
-  width: 620px;
+  width: 600px;
   max-width: 95vw;
   border-radius: 14px;
   box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
 }
 
-.modal-header {
-  padding: 14px 18px;
-}
-
-.modal-cuerpo {
-  max-height: 75vh;
-  overflow-y: auto;
-}
-
 .confirmacion {
-  width: 440px;
+  width: 450px;
   max-width: 95vw;
   border-radius: 14px;
   box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
 }
 
 .calificacion-modal {
-  width: 420px;
+  width: 410px;
   max-width: 95vw;
   border-radius: 14px;
   box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
@@ -2065,35 +1874,25 @@ buscarServicios()
 
 @media (max-width: 600px) {
   .pagina {
-    padding: 12px 10px 40px;
+    padding: 12px;
   }
-
   .titulo {
     font-size: 17px;
   }
-
   .subtitulo {
     display: none;
   }
-
-  .boton-nuevo {
-    font-size: 12px;
-    padding: 0 12px;
+  .header .q-btn {
+    font-size: 11px;
   }
-
+  .tarjeta {
+    border-radius: 15px;
+  }
   .datos-grid {
     grid-template-columns: 1fr;
-    gap: 6px;
   }
-
   .estados-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  .filtro-chip {
-    font-size: 11px;
-    padding: 2px 8px;
   }
 }
 </style>
