@@ -550,7 +550,7 @@
 
                   >
 
-                    Abono: ${{ Number(resultado.servicio.montoAbono || 0).toFixed(2) }}
+                    Abono: {{ formatoPesos(resultado.servicio.montoAbono) }}
 
                   </q-badge>
 
@@ -778,8 +778,6 @@
 
                 <q-select
 
-                  v-if="formulario.marca !== 'Otra'"
-
                   v-model="formulario.marca"
 
                   label="Marca *"
@@ -792,31 +790,31 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md campo-formulario"
+                  class="q-mb-md"
 
                 />
 
                 <q-input
 
-                  v-else
+                  v-if="formulario.marca === 'Otra'"
 
-                  v-model="formulario.marcaPersonalizada"
+                  v-model="formulario.marcaOtra"
 
-                  label="Marca *"
+                  label="Marca personalizada *"
 
-                  placeholder="Escribe la marca"
+                  placeholder="Ej: Lenovo"
 
                   outlined
 
-                  :rules="[reglaObligatoria]"
+                  :rules="[reglaMarcaOtra]"
 
-                  class="q-mb-md campo-formulario"
+                  class="q-mb-md"
 
                 />
 
                 <q-select
 
-                  v-if="formulario.marca !== 'Otra'"
+                  v-else
 
                   v-model="formulario.modelo"
 
@@ -830,13 +828,13 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md campo-formulario"
+                  class="q-mb-md"
 
                 />
 
                 <q-input
 
-                  v-else
+                  v-if="formulario.marca === 'Otra'"
 
                   v-model="formulario.modelo"
 
@@ -848,7 +846,7 @@
 
                   :rules="[reglaObligatoria]"
 
-                  class="q-mb-md campo-formulario"
+                  class="q-mb-md"
 
                 />
 
@@ -1308,7 +1306,7 @@ function crearFormulario() {
 
     marca: '',
 
-    marcaPersonalizada: '',
+    marcaOtra: '',
 
     modelo: '',
 
@@ -1606,6 +1604,18 @@ function reglaNombre(valor) {
 
 }
 
+function reglaMarcaOtra(valor) {
+
+  if (formulario.value.marca === 'Otra' && (!valor || !String(valor).trim())) {
+
+    return 'Escribe la marca personalizada'
+
+  }
+
+  return true
+
+}
+
 function reglaPrecio(valor) {
 
   if (
@@ -1662,7 +1672,15 @@ function numeroSinFormato(valor) {
 
 function formatoPesos(valor) {
 
-  return `$ ${numeroSinFormato(valor).toLocaleString('es-CO')}`
+  return new Intl.NumberFormat('es-CO', {
+
+    style: 'currency',
+
+    currency: 'COP',
+
+    maximumFractionDigits: 0
+
+  }).format(numeroSinFormato(valor))
 
 }
 
@@ -1848,11 +1866,10 @@ function cambiarMarca() {
 
   formulario.value.modelo = ''
 
-  if (formulario.value.marca !== 'Otra') {
-    formulario.value.marcaPersonalizada = ''
-  }
+  formulario.value.marcaOtra = ''
 
   actualizarModelos()
+
 }
 
 function abrirNuevoServicio() {
@@ -1941,17 +1958,21 @@ function guardarServicio() {
 
   }
 
+  const marcaFinal = formulario.value.marca === 'Otra'
+
+    ? String(formulario.value.marcaOtra || '').trim()
+
+    : String(formulario.value.marca || '').trim()
+
   const servicio = {
 
     ...formulario.value,
 
     cliente: String(formulario.value.cliente || '').trim(),
 
-    marca: String(
-      formulario.value.marca === 'Otra'
-        ? formulario.value.marcaPersonalizada
-        : formulario.value.marca || ''
-    ).trim(),
+    marca: marcaFinal,
+
+    marcaOtra: formulario.value.marca === 'Otra' ? marcaFinal : '',
 
     modelo: String(formulario.value.modelo || '').trim(),
 
@@ -2049,9 +2070,9 @@ function editarServicio(index) {
 
     ...servicio,
 
-    marca: marcas.includes(servicio.marca || '') ? servicio.marca : 'Otra',
+    marca: servicio.marcaOtra ? 'Otra' : (servicio.marca || ''),
 
-    marcaPersonalizada: marcas.includes(servicio.marca || '') ? '' : (servicio.marca || ''),
+    marcaOtra: servicio.marcaOtra || (servicio.marca && !marcas.includes(servicio.marca) ? servicio.marca : ''),
 
     modelo: servicio.modelo || servicio.equipo || '',
 
@@ -2222,422 +2243,499 @@ function contarPago(estado) {
 <style scoped>
 
 .pagina {
-  min-height: 100vh;
-  padding: 32px clamp(16px, 4vw, 64px) 55px;
-  background: #f5f7f9;
+
+  background:
+
+    linear-gradient(180deg, #f8fbfc 0%, #eef4f5 100%);
+
   font-family: "Avenir Next", "Trebuchet MS", sans-serif;
+
+  min-height: 100vh;
+
+  padding: 30px clamp(16px, 4vw, 56px) 48px;
+
 }
 
 .header {
-  background: linear-gradient(135deg, #123f48 0%, #1f6870 55%, #2c7b7b 100%);
-  box-shadow: 0 6px 22px rgba(20, 62, 70, 0.22);
+
+  background: linear-gradient(115deg, #173f46 0%, #245c62 100%);
+
+  box-shadow: 0 4px 18px rgba(18, 52, 58, 0.24);
+
 }
 
 .barra-superior {
-  min-height: 82px;
-  padding: 12px clamp(16px, 4vw, 64px);
+
+  min-height: 76px;
+
+  padding: 10px clamp(16px, 4vw, 56px);
+
 }
 
 .marca-header {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
-  gap: 14px;
-}
 
-.marca-header .q-avatar {
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
+  display: flex;
+
+  align-items: center;
+
+  flex: 1;
+
+  min-width: 0;
+
+  gap: 13px;
+
 }
 
 .boton-nuevo {
-  border-radius: 12px;
-  padding: 0 19px;
-  min-height: 42px;
+
+  border-radius: 10px;
+
+  padding: 0 18px;
+
   font-weight: 700;
+
   text-transform: none;
+
   letter-spacing: 0;
+
   margin-left: 18px;
-  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.10);
+
 }
 
 .titulo {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
+
+  font-size: 21px;
+
+  font-weight: bold;
+
+  letter-spacing: 0.1px;
+
 }
 
 .subtitulo {
-  margin-top: 2px;
-  font-size: 13px;
-  opacity: 0.82;
+
+  font-size: 14px;
+
+  opacity: 0.9;
+
   letter-spacing: 0.2px;
+
 }
 
 .buscador {
-  margin-bottom: 24px;
-  border: 1px solid #e1e8eb;
-  border-radius: 17px;
-  background: #ffffff;
-  box-shadow: 0 8px 25px rgba(31, 67, 73, 0.07) !important;
-}
 
-.buscador :deep(.q-card__section) {
-  padding: 18px;
+  border: 1px solid #e0eaec;
+
+  border-radius: 14px;
+
+  background: white;
+
+  box-shadow: 0 8px 24px rgba(42, 76, 82, 0.07) !important;
+
 }
 
 .buscador :deep(.q-field__control) {
-  min-height: 50px;
-  border-radius: 12px;
-  background: #fafcfc;
-}
 
-.buscador :deep(.q-field__native),
-.buscador :deep(.q-field__label) {
-  font-size: 14px;
+  border-radius: 10px;
+
+  background: #fbfdfd;
+
+
+
 }
 
 .estadistica {
-  height: 100%;
-  border: 1px solid #e3e9eb;
-  border-radius: 17px;
-  background: #ffffff;
-  box-shadow: 0 8px 22px rgba(31, 67, 73, 0.06) !important;
-}
 
-.estadistica:hover {
-  box-shadow: 0 12px 28px rgba(31, 67, 73, 0.10) !important;
+  border: 1px solid #e0eaec;
+
+  border-radius: 14px;
+
+  height: 100%;
+
+  background: rgba(255, 255, 255, 0.94);
+
+  box-shadow: 0 8px 22px rgba(42, 76, 82, 0.06) !important;
+
 }
 
 .estadistica-contenido {
+
   display: flex;
+
   align-items: center;
+
   gap: 15px;
+
 }
 
 .texto-estadistica {
-  color: #718087;
-  font-size: 13px;
-  font-weight: 600;
+
+  color: #6b7280;
+
+  font-size: 15px;
+
 }
 
 .numero {
-  margin-top: 2px;
+
   font-size: 30px;
-  line-height: 1;
-  font-weight: 800;
-  color: #173f46;
+
+  font-weight: bold;
+
+  color: #164b58;
+
 }
 
 .color-circle {
-  width: 48px;
-  height: 48px;
+
+  width: 50px;
+
+  height: 50px;
+
   border-radius: 14px;
+
   flex-shrink: 0;
-  position: relative;
+
 }
 
 .color-circle.primary {
-  background: #e7f4f4;
-  border: 1px solid #c8e3e4;
+
+  background: #007bff;
+
+  border: 1px solid #0066d6;
+
 }
 
 .color-circle.warning {
-  background: #fff5dc;
-  border: 1px solid #f5dfaa;
+
+  background: #fed843;
+
+  border: 1px solid #e5bd26;
+
 }
 
 .color-circle.negative {
-  background: #fdeceb;
-  border: 1px solid #f2cfcc;
+
+  background: #ec1000;
+
+  border: 1px solid #c90e00;
+
 }
 
 .tarjeta {
-  width: 100%;
-  align-self: flex-start;
+
+  border: 1px solid #e0eaec;
+
+  border-radius: 14px;
+
   overflow: hidden;
-  border: 1px solid #e1e8eb;
-  border-radius: 17px;
-  background: #ffffff;
-  box-shadow: 0 9px 26px rgba(31, 67, 73, 0.065) !important;
+
+  align-self: flex-start;
+
+  width: 100%;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow: 0 9px 24px rgba(42, 76, 82, 0.07) !important;
+
 }
 
-.tarjeta:hover {
-  box-shadow: 0 13px 30px rgba(31, 67, 73, 0.11) !important;
-}
+
 
 .pago-pendiente {
-  border-left: 5px solid #d6534b;
+
+  border-left: 6px solid #c62828;
+
 }
+
+
 
 .pago-abono {
-  border-left: 5px solid #e1a52f;
-}
 
-.tarjeta-cabecera {
-  padding: 17px 18px 15px;
-}
+  border-left: 6px solid #f2a900;
 
-.tarjeta-contenido {
-  padding: 16px 18px 13px;
 }
 
 .nombre-cliente {
-  color: #173f46;
-  font-size: 17px;
-  font-weight: 800;
-  line-height: 1.2;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  color: #20383c;
+
 }
 
+
+
 .equipo {
-  margin-top: 4px;
-  color: #7a878d;
-  font-size: 13px;
+
+  color: #6b7280;
+
+  font-size: 15px;
+
   line-height: 1.25;
+
+}
+
+.tarjeta-cabecera {
+
+  padding: 14px 16px 12px;
+
+}
+
+.tarjeta-contenido {
+
+  padding: 14px 16px 12px;
+
 }
 
 .datos-grid {
+
   display: grid;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px 16px;
+
+  gap: 8px 18px;
+
 }
 
 .dato {
+
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 0;
+
+  color: #555;
+
+  font-size: 15px;
+
+  line-height: 1.3;
+
   min-width: 0;
-  color: #56656a;
-  font-size: 13px;
-  line-height: 1.35;
+
 }
 
 .dato span {
+
   min-width: 0;
+
   overflow-wrap: anywhere;
+
 }
+
+
 
 .dato .q-icon {
-  margin-top: 1px;
-  color: #2d7075;
-}
 
-.estados-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 12px;
-}
+  color: #29626D;
 
-.estado-bloque {
-  margin-top: 10px;
-  padding: 10px 11px;
-  border-radius: 11px;
-  background: #f7f9fa;
 }
 
 .titulo-pequeno {
-  color: #7a878d;
-  font-size: 11px;
-  font-weight: 700;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
   line-height: 1.25;
-  text-transform: uppercase;
-  letter-spacing: 0.45px;
+
+}
+
+.estado-bloque {
+
+  margin-top: 10px;
+
+}
+
+.estados-grid {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+
 }
 
 .observaciones {
-  background: #f2f6f6;
-  color: #56656a;
-}
 
-:deep(.tarjeta .q-badge) {
-  border-radius: 7px;
-  padding: 5px 8px;
-  font-size: 11px;
-  font-weight: 700;
-}
+  background: #f1f3f4;
 
-:deep(.tarjeta .q-rating) {
-  margin-top: 4px;
-}
+  border-radius: 10px;
 
-:deep(.tarjeta .q-card__actions) {
-  min-height: 49px;
-  padding: 7px 12px 10px;
-  border-top: 1px solid #edf1f2;
-  background: #fbfcfc;
-}
+  padding: 10px 12px;
 
-:deep(.tarjeta .q-btn) {
-  min-height: 34px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: none;
+  color: #555;
+
 }
 
 .mensaje-vacio {
-  margin-top: 8px;
-  padding: 75px 20px;
+
   text-align: center;
-  color: #7b888d;
-  border: 1px dashed #cfdcde;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
+
+  padding: 70px 20px;
+
+  color: #777;
+
 }
 
-.mensaje-vacio .q-icon {
-  color: #6c969a;
-}
+
 
 .mensaje-vacio h4 {
-  margin: 14px 0 8px;
-  color: #30494e;
-  font-size: 20px;
-  font-weight: 800;
+
+  margin-bottom: 8px;
+
+  color: #444;
+
 }
 
+
+
 .mensaje-vacio p {
-  margin: 5px 0 12px;
+
+  margin-top: 5px;
+
 }
 
 :deep(.q-card) {
+
   font-family: "Avenir Next", "Trebuchet MS", sans-serif;
-}
 
-:deep(.q-btn) {
-  border-radius: 10px;
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-:deep(.q-card),
-:deep(.q-field__control) {
-  transition: box-shadow 0.18s ease, border-color 0.18s ease;
-}
-
-:deep(.q-field--outlined .q-field__control:before) {
-  border-color: #d8e3e5;
-}
-
-:deep(.q-field--outlined.q-field--focused .q-field__control:after) {
-  border-color: #2d7075;
 }
 
 :deep(.q-dialog__inner) {
-  padding: 20px;
+
+  padding: 24px;
+
+}
+
+:deep(.q-btn) {
+
+  border-radius: 9px;
+
+  text-transform: none;
+
+  letter-spacing: 0;
+
+  transition: none !important;
+
+}
+
+:deep(.q-card),
+
+:deep(.q-field__control),
+
+:deep(.q-focus-helper) {
+
+  transition: none !important;
+
+}
+
+:deep(.tarjeta .q-card__actions) {
+
+  padding: 8px 12px 12px;
+
+}
+
+:deep(.q-field--outlined .q-field__control:before) {
+
+  border-color: #d7e4e6;
+
+}
+
+:deep(.q-field--outlined.q-field--focused .q-field__control:after) {
+
+  border-color: #347b7b;
+
 }
 
 .modal {
+
   width: 600px;
+
   max-width: 95vw;
-  border-radius: 18px;
-  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
+
+  border-radius: 14px;
+
+  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
+
 }
 
 .confirmacion {
+
   width: 450px;
+
   max-width: 95vw;
-  border-radius: 18px;
-  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
+
+  border-radius: 14px;
+
+  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
+
 }
 
 .calificacion-modal {
+
   width: 410px;
+
   max-width: 95vw;
-  border-radius: 18px;
-  box-shadow: 0 22px 55px rgba(24, 62, 68, 0.20) !important;
-}
 
-.campo-formulario :deep(.q-field__label) {
-  color: #3f4d54;
-  font-size: 15px;
-  font-weight: 600;
-}
+  border-radius: 14px;
 
-.campo-formulario :deep(.q-field__native),
-.campo-formulario :deep(.q-field__input) {
-  font-size: 15px;
-  font-weight: 500;
-  color: #26343a;
-}
+  box-shadow: 0 18px 50px rgba(31, 67, 73, 0.18) !important;
 
-.campo-formulario :deep(.q-field__control) {
-  min-height: 56px;
-  border-radius: 10px;
 }
 
 @media (max-width: 600px) {
+
   .pagina {
-    padding: 14px 12px 35px;
-  }
 
-  .barra-superior {
-    min-height: 68px;
-    padding: 9px 12px;
-  }
+    padding: 12px;
 
-  .marca-header {
-    gap: 9px;
-  }
-
-  .marca-header .q-avatar {
-    width: 38px;
-    height: 38px;
   }
 
   .titulo {
+
     font-size: 17px;
+
   }
 
   .subtitulo {
+
     display: none;
+
   }
 
-  .boton-nuevo {
-    margin-left: 8px;
-    padding: 0 10px;
-    min-height: 38px;
-  }
+  .header .q-btn {
 
-  .boton-nuevo .q-icon {
-    margin-right: 0;
-  }
-
-  .boton-nuevo :deep(.q-btn__content) {
     font-size: 11px;
-  }
 
-  .buscador :deep(.q-card__section) {
-    padding: 13px;
-  }
-
-  .estadistica {
-    border-radius: 15px;
-  }
-
-  .numero {
-    font-size: 26px;
   }
 
   .tarjeta {
-    border-radius: 16px;
+
+    border-radius: 15px;
+
   }
 
-  .datos-grid,
-  .estados-grid {
+  .datos-grid {
+
     grid-template-columns: 1fr;
+
   }
 
-  .tarjeta-cabecera,
-  .tarjeta-contenido {
-    padding-left: 15px;
-    padding-right: 15px;
+  .estados-grid {
+
+    grid-template-columns: 1fr;
+
   }
 
-  .mensaje-vacio {
-    padding: 55px 16px;
-  }
 }
 
 </style>
